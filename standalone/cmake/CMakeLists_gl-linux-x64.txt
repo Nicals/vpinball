@@ -197,6 +197,11 @@ add_executable(vpinball
    src/physics/PhysicsEngine.h
    src/physics/quadtree.cpp
    src/physics/quadtree.h
+   src/physics/nudge/NudgeModel.h
+   src/physics/nudge/LegacyNudge.h
+   src/physics/nudge/LegacyNudge.cpp
+   src/physics/nudge/TableAccelerationNudge.h
+   src/physics/nudge/TableAccelerationNudge.cpp
 
    src/plugins/MsgPlugin.h
    src/plugins/MsgPluginManager.h

@@ -2,6 +2,9 @@
 
 #include "core/stdafx.h"
 #include "PhysicsEngine.h"
+#include "nudge/NudgeModel.h"
+#include "nudge/LegacyNudge.h"
+#include "physics/nudge/TableAccelerationNudge.h"
 
 PhysicsEngine::PhysicsEngine(PinTable *const table) : m_nudgeFilterX("x"), m_nudgeFilterY("y")
 {
@@ -14,40 +17,29 @@ PhysicsEngine::PhysicsEngine(PinTable *const table) : m_nudgeFilterX("x"), m_nud
    m_plumbVel.Set(0.f, 0.f, 0.f);
 
    // Initialize legacy nudging.
-   m_legacyNudgeBack = Vertex2D(0.f, 0.f); 
    m_nudgeAcceleration.SetZero();
 
-   // Initialize new nudging.
-   m_tableVel.SetZero();
-   m_tableDisplacement.SetZero();
-   m_tableVelOld.SetZero();
-   m_tableAcceleration.SetZero();
-
-   // Initialize velocity-based accelerometer sensor input.
-   m_prevSensorTableVelocity.SetZero();
-
-   // Table movement (displacement u) is modeled as a mass-spring-damper system
-   //   u'' = -k u - c u'
-   // with a spring constant k and a damping coefficient c.
-   // See http://en.wikipedia.org/wiki/Damping#Linear_damping
-
-   const float nudgeTime = table->m_nudgeTime; // T
-   constexpr float dampingRatio = 0.5f; // zeta
-
-   // time for one half period (one swing and swing back):
-   //   T = pi / omega_d,
-   // where
-   //   omega_d = omega_0 * sqrt(1 - zeta^2)       (damped frequency)
-   //   omega_0 = sqrt(k)                          (undamped frequency)
-   // Solving for the spring constant k, we get
-   m_nudgeSpring = (float)(M_PI * M_PI) / (nudgeTime * nudgeTime * (1.0f - dampingRatio * dampingRatio));
-
-   // The formula for the damping ratio is
-   //   zeta = c / (2 sqrt(k)).
-   // Solving for the damping coefficient c, we get
-   m_nudgeDamping = dampingRatio * 2.0f * sqrtf(m_nudgeSpring);
-
    ReadNudgeSettings(table->m_settings);
+
+   // XXX: Temporary. I would like to pass the NudgeModel instance as constructor argument.
+   // Ideally, this class should only depend on the abstraction of a nudge (NudgeModel) not
+   // on concrete implementation.
+   bool useLegacyNudge = table->m_settings.LoadValueWithDefault(Settings::Player, "EnableLegacyNudge"s, false);
+   if (useLegacyNudge)
+   {
+      PLOGI << "Setting up legacy nudge model.";
+      const float nudgeStrength = table->m_settings.LoadValueWithDefault(Settings::Player, "LegacyNudgeStrength"s, 1.f); 
+      m_nudge = new LegacyNudge(nudgeStrength);
+   }
+   else
+   {
+      PLOGI << "Setting up table acceleration nudge model.";
+      // XXX: Global instance passed as argument. This is needed to get accelerometer values.
+      // Ideally, I would like to have accelerometer represented in g_pplayer as a class
+      // instance and only pass this instance to TableAccelerationNudge.
+      // This way, we would have a clearer g_pplayer/nudge decoupling.
+      m_nudge = new TableAccelerationNudge(g_pplayer, table->m_nudgeTime);
+   }
 
    for (IEditable *const pe : table->m_vedit)
    {
@@ -235,17 +227,13 @@ void PhysicsEngine::Nudge(float angle, float force)
    const float a = ANGTORAD(angle);
    const float sn = sinf(a) * force;
    const float cs = cosf(a) * force;
-   if (!m_legacyNudge)
-   {
-      m_tableVel.x += sn;
-      m_tableVel.y += -cs;
-   }
-   else if (m_legacyNudgeTime == 0)
-   {
-      m_legacyNudgeBack.x = sn * m_legacyNudgeStrength;
-      m_legacyNudgeBack.y = -cs * m_legacyNudgeStrength;
-      m_legacyNudgeTime = 100;
-   }
+
+   m_nudge->Nudge(sn, cs);
+}
+
+Vertex3Ds PhysicsEngine::GetNudgeAcceleration() const
+{
+   return m_nudge->GetAcceleration();
 }
 
 // For the time being, there are 3 models available for nudge simulation (from keyboard or cabinet sensor).
@@ -264,61 +252,7 @@ void PhysicsEngine::UpdateNudge(float dtime)
    // Since we are deriving forces/accelerations from velocities by doing a simple substract without scaling by delta time, we need dtime to be constant
    assert(fabs(dtime - ((double)PHYSICS_STEPTIME / (double)DEFAULT_STEPTIME)) < 1e-5);
 
-   // Nudge acceleration is computed either from hardware accelerometer(s) or from nudge commands called from script.
-
-   if (!m_legacyNudge)
-   {
-      // Perform keyboard nudge by simulating table movement modeled as a mass-spring-damper system
-      //   u'' = -k u - c u'
-      // with a spring constant k and a damping coefficient c
-      const Vertex3Ds force = -m_nudgeSpring * m_tableDisplacement - m_nudgeDamping * m_tableVel;
-      m_tableVel          += (float)PHYS_FACTOR * force;
-      m_tableDisplacement += (float)PHYS_FACTOR * m_tableVel;
-
-      m_tableAcceleration = (m_tableVel - m_tableVelOld) / (float)PHYS_FACTOR;
-      m_tableVelOld = m_tableVel;
-
-      // Acquire from sensor input
-      Vertex2D sensor = g_pplayer->GetRawAccelerometer();
-
-      // Simulate hardware nudge by getting the cabinet velocity and applying it to the table spring model
-      if (g_pplayer->IsAccelInputAsVelocity())
-      {
-         // Compute acceleration from acquired table velocity and apply it as a force to the balls.
-         // Apply the external accelerometer-based nudge velocity input (which is
-         // a separate input from the traditional acceleration input)
-         Vertex3Ds sensorTableVelocity(sensor.x, sensor.y, 0.f);
-         m_tableAcceleration += (sensorTableVelocity - m_prevSensorTableVelocity) / (float)PHYS_FACTOR;
-         m_prevSensorTableVelocity = sensorTableVelocity;
-
-         // No ball 'nudge' force directly applied to the ball, only force resulting from table acceleration
-         m_nudgeAcceleration.SetZero();
-      }
-      else
-      {
-         // Simulate hardware nudge by getting the cabinet acceleration and applying it directly to the ball
-         m_nudgeAcceleration.Set(sensor.x, sensor.y, 0.f);
-      }
-   }
-   // legacy/VP9 style keyboard nudging, by directly applying a force to the balls
-   else if (m_legacyNudgeTime != 0)
-   {
-      m_legacyNudgeTime--;
-      if (m_legacyNudgeTime == 95)
-      {
-         m_nudgeAcceleration.x = -m_legacyNudgeBack.x * 2.0f;
-         m_nudgeAcceleration.y = m_legacyNudgeBack.y * 2.0f;
-      }
-      else if (m_legacyNudgeTime == 90)
-      {
-         m_nudgeAcceleration.x = m_legacyNudgeBack.x;
-         m_nudgeAcceleration.y = -m_legacyNudgeBack.y;
-      }
-      else
-      {
-         m_nudgeAcceleration.SetZero();
-      }
-   }
+   m_nudge->Update(dtime);
 
    // Apply our filter to the nudge data (meaningless for legacy and velocity based nudging ?)
    if (m_enableNudgeFilter)
@@ -467,18 +401,11 @@ void PhysicsEngine::ReadNudgeSettings(Settings& settings)
    m_plumbTiltThreshold = (float)settings.LoadValueWithDefault(Settings::Player, "TiltSensitivity"s, 400) * (float)(1.0 / 1000.0);
 
    m_enableNudgeFilter = settings.LoadValueWithDefault(Settings::Player, "EnableNudgeFilter"s, false);
-
-   m_legacyNudge = settings.LoadValueWithDefault(Settings::Player, "EnableLegacyNudge"s, false);
-   m_legacyNudgeStrength = settings.LoadValueWithDefault(Settings::Player, "LegacyNudgeStrength"s, 1.f);
 }
 
 Vertex2D PhysicsEngine::GetScreenNudge() const
 {
-   // in table coordinates, +Y points down, but in screen coordinates, it points up, so we have to flip the y component
-   if (m_legacyNudge)
-      return {m_legacyNudgeBack.x * sqrf((float)m_legacyNudgeTime * 0.01f), -m_legacyNudgeBack.y * sqrf((float)m_legacyNudgeTime * 0.01f)};
-   else
-      return {m_tableDisplacement.x, -m_tableDisplacement.y};
+   return m_nudge->GetScreenNudge();
 }
 
 void PhysicsEngine::RayCast(const Vertex3Ds &source, const Vertex3Ds &target, const bool uiCast, vector<HitTestResult> &vhoHit)

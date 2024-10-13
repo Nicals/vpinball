@@ -6,6 +6,10 @@
 #include "physics/quadtree.h"
 #include "physics/NudgeFilter.h"
 
+
+class NudgeModel;
+
+
 class PhysicsEngine final
 {
 public:
@@ -30,7 +34,7 @@ public:
    bool RecordContact(const CollisionEvent& newColl);
 
    void Nudge(float angle, float force);
-   Vertex3Ds GetNudgeAcceleration() const { return m_tableAcceleration + m_nudgeAcceleration; }; // Table acceleration (due to nudge) expressed in VP units
+   Vertex3Ds GetNudgeAcceleration() const;
    Vertex2D GetScreenNudge() const; // Table displacement
    const Vertex3Ds& GetPlumbPos() const { return m_plumbPos; }
    const float GetPlumbPoleLength() const { return m_plumbPoleLength; }
@@ -84,36 +88,14 @@ private:
    HitQuadtree m_UIOctree;
 
 #pragma region Nudge & Tilt Plumb
+   NudgeModel* m_nudge = nullptr;
+
    void UpdateNudge(float dtime);
 
    Vertex3Ds m_nudgeAcceleration; // filtered nudge acceleration acquired from hardware or resulting of keyboard nudge
    bool m_enableNudgeFilter = false; // Located in physic engine instead of input since it is applied at physics cycle rate, on hardware input but also on keyboard nudge
    NudgeFilter m_nudgeFilterX;
    NudgeFilter m_nudgeFilterY;
-   
-   // Table modeled as a spring
-   Vertex3Ds m_tableVel;
-   Vertex3Ds m_tableDisplacement;
-   Vertex3Ds m_tableVelOld;
-   Vertex3Ds m_tableAcceleration;
-   float m_nudgeSpring;
-   float m_nudgeDamping;
-
-   // External accelerometer velocity input.  This is for newer
-   // pin cab I/O controllers that can integrate acceleration 
-   // samples on the device side to compute the instantaneous
-   // cabinet velocity, and pass the velocity data to the host.
-   //
-   // Velocities computed on the device side are applied to the
-   // physics model the same way as the velocities computed from
-   // the "spring model" for scripted nudge force inputs.
-   Vertex3Ds m_prevSensorTableVelocity;
-
-   // legacy/VP9 style keyboard nudging
-   bool m_legacyNudge = false;
-   float m_legacyNudgeStrength = 0.f;
-   Vertex2D m_legacyNudgeBack;
-   int m_legacyNudgeTime = 0;
 
    // Tilt plumb
    bool m_enablePlumbTilt = false;
