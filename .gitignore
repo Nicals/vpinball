@@ -13,7 +13,7 @@ fastlane/
 
 tmp
 
-CMakeLists.txt
+/CMakeLists.txt
 
 standalone/inc/wine/dlls/vbscript/parser.tab.h
 standalone/inc/wine/dlls/vbscript/parser.tab.c
