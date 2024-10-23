@@ -76,10 +76,11 @@ FetchContent_Declare(sdl_ttf
 include(FreeImage)
 include(FFMpeg)
 
-FetchContent_MakeAvailable(sdl sdl_image sdl_ttf)
-
-
 ## Vpinball
+
+add_subdirectory(dependencies/altsound)
+
+FetchContent_MakeAvailable(sdl sdl_image sdl_ttf)
 
 # Quick smoke test to ensure lib dependencies are properly built
 add_executable(smoke_test smoke.cpp)
@@ -87,6 +88,7 @@ target_link_libraries(smoke_test
   PRIVATE
     ffmpeg
     freeimage
+    altsound
     SDL3-shared
     SDL3_image-shared
     SDL3_ttf-shared
