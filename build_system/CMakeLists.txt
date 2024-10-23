@@ -73,12 +73,11 @@ FetchContent_Declare(sdl_ttf
   GIT_TAG b61b50ea756576382cc1ccf12491f7ebeab6eed1
 )
 
-include(FreeImage)
-
 ## Vpinball
 
 add_subdirectory(dependencies/altsound)
 add_subdirectory(dependencies/ffmpeg)
+add_subdirectory(dependencies/freeimage)
 
 FetchContent_MakeAvailable(sdl sdl_image sdl_ttf)
 
