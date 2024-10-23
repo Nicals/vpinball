@@ -23,6 +23,12 @@ ExternalProject_Add_Step(altsound_build fetch_dependencies
   COMMAND unzip -oj bass.zip libs/x86_64/libbass.so -d <SOURCE_DIR>/third-party/runtime-libs/linux/x64/
 )
 
+ExternalProject_Add_Step(altsound_build post_install
+  DEPENDEES install
+  COMMENT Install bass lib
+  COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/third-party/runtime-libs/linux/x64/libbass.so <INSTALL_DIR>/lib/
+)
+
 ExternalProject_Get_Property(altsound_build INSTALL_DIR)
 ExternalProject_Get_Property(altsound_build SOURCE_DIR)
 
@@ -31,6 +37,6 @@ add_dependencies(altsound altsound_build)
 
 target_link_libraries(altsound INTERFACE
   ${INSTALL_DIR}/lib/libaltsound.so
-  ${SOURCE_DIR}/third-party/runtime-libs/linux/x64/libbass.so
+  ${INSTALL_DIR}/lib/libbass.so
 )
 target_include_directories(altsound INTERFACE ${INSTALL_DIR}/include)
