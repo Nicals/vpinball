@@ -1,9 +1,12 @@
+#include <iostream>
+
 #include <SDL3_image/SDL_image.h>
 #include <FreeImage.h>
 extern "C" {
 #include <libavutil/avstring.h>
 }
 #include <altsound.h>
+#include <libpinmame.h>
 
 int main(int argc, char* argv[])
 {
@@ -11,6 +14,7 @@ int main(int argc, char* argv[])
    FreeImage_Initialise();
    av_strcasecmp("foo", "foo");
    AltsoundInit("foo", "bar");
+   std::cout << "Pinmame: " << !PinmameIsRunning() << std::endl;
 
    return 0;
 }

@@ -78,6 +78,7 @@ FetchContent_Declare(sdl_ttf
 add_subdirectory(dependencies/altsound)
 add_subdirectory(dependencies/ffmpeg)
 add_subdirectory(dependencies/freeimage)
+add_subdirectory(dependencies/pinmame)
 
 FetchContent_MakeAvailable(sdl sdl_image sdl_ttf)
 
@@ -85,6 +86,7 @@ FetchContent_MakeAvailable(sdl sdl_image sdl_ttf)
 add_executable(smoke_test smoke.cpp)
 target_link_libraries(smoke_test
   PRIVATE
+    pinmame
     ffmpeg
     freeimage
     altsound
