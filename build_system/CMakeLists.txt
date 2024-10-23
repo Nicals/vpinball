@@ -74,11 +74,11 @@ FetchContent_Declare(sdl_ttf
 )
 
 include(FreeImage)
-include(FFMpeg)
 
 ## Vpinball
 
 add_subdirectory(dependencies/altsound)
+add_subdirectory(dependencies/ffmpeg)
 
 FetchContent_MakeAvailable(sdl sdl_image sdl_ttf)
 

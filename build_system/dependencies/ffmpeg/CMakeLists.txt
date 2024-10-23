@@ -1,13 +1,10 @@
-# Builds FFMPeg library.
+# Builds FFMPeg library exposing a ffmpeg target.
 
 include(ExternalProject)
 
-find_program(MAKE_EXECUTABLE NAMES make gmake nmake)
-
 ExternalProject_Add(ffmpeg_build
-  GIT_REPOSITORY https://github.com/FFmpeg/FFmpeg.git
-  GIT_TAG b08d7969c550a804a59511c7b83f2dd8cc0499b8
-  STEP_TARGETS install
+  URL https://github.com/FFmpeg/FFmpeg/archive/b08d7969c550a804a59511c7b83f2dd8cc0499b8.zip
+  DOWNLOAD_NO_PROGRESS ON
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --enable-shared
@@ -17,10 +14,9 @@ ExternalProject_Add(ffmpeg_build
       --prefix=<INSTALL_DIR>
 )
 ExternalProject_Get_Property(ffmpeg_build INSTALL_DIR)
-file(GLOB ffmpeg_libs ${INSTALL_DIR}/lib/lib*.so*)
 
 add_library(ffmpeg INTERFACE)
-add_dependencies(ffmpeg ffmpeg_build-install)
+add_dependencies(ffmpeg ffmpeg_build)
 
 target_link_libraries(ffmpeg
   INTERFACE
