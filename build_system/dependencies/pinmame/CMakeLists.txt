@@ -13,6 +13,7 @@ ExternalProject_Add(pinmame_build
   PATCH_COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/cmake/libpinmame/CMakeLists_linux-x64.txt <SOURCE_DIR>/CMakeLists.txt
   INSTALL_COMMAND ${CMAKE_COMMAND} -E make_directory <INSTALL_DIR>/include <INSTALL_DIR>/lib
     COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/src/libpinmame/libpinmame.h <INSTALL_DIR>/include/
+    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libpinmame.so <INSTALL_DIR>/lib/
     COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libpinmame.so.3.6 <INSTALL_DIR>/lib/
 )
 
@@ -21,5 +22,5 @@ ExternalProject_Get_Property(pinmame_build INSTALL_DIR)
 add_library(pinmame INTERFACE)
 add_dependencies(pinmame pinmame_build)
 
-target_link_libraries(pinmame INTERFACE ${INSTALL_DIR}/lib/libpinmame.so.3.6)
+target_link_libraries(pinmame INTERFACE ${INSTALL_DIR}/lib/libpinmame.so)
 target_include_directories(pinmame INTERFACE ${INSTALL_DIR}/include/)
