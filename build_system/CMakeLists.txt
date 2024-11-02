@@ -73,6 +73,11 @@ FetchContent_Declare(sdl_ttf
   GIT_TAG b61b50ea756576382cc1ccf12491f7ebeab6eed1
 )
 
+FetchContent_Declare(pindof
+  GIT_REPOSITORY https://github.com/Nicals/libdof.git
+  GIT_TAG fetch-deps-from-cmake
+)
+
 ## Vpinball
 
 add_subdirectory(dependencies/altsound)
@@ -80,12 +85,13 @@ add_subdirectory(dependencies/ffmpeg)
 add_subdirectory(dependencies/freeimage)
 add_subdirectory(dependencies/pinmame)
 
-FetchContent_MakeAvailable(sdl sdl_image sdl_ttf)
+FetchContent_MakeAvailable(pindof sdl sdl_image sdl_ttf)
 
 # Quick smoke test to ensure lib dependencies are properly built
 add_executable(smoke_test smoke.cpp)
 target_link_libraries(smoke_test
   PRIVATE
+    dof_shared
     pinmame
     ffmpeg
     freeimage

@@ -7,6 +7,7 @@ extern "C" {
 }
 #include <altsound.h>
 #include <libpinmame.h>
+#include <DOF/DOF.h>
 
 int main(int argc, char* argv[])
 {
@@ -15,6 +16,8 @@ int main(int argc, char* argv[])
    av_strcasecmp("foo", "foo");
    AltsoundInit("foo", "bar");
    std::cout << "Pinmame: " << !PinmameIsRunning() << std::endl;
+
+   DOF::DOF dof;
 
    return 0;
 }
