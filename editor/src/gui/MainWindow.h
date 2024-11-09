@@ -13,12 +13,13 @@ namespace vpin::editor {
 
       public:
          explicit MainWindow(QWidget* parent = nullptr);
-         ~MainWindow();
 
       private:
-         void buildMenuBar();
+         void buildFileMenuBar();
+         void buildEditMenuBar();
 
       public slots:
+         void openSettingsDialog();
          void quitApplication();
    };
 

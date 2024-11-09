@@ -1,7 +1,9 @@
 #include <QApplication>
 #include <QCoreApplication>
 #include <QMenuBar>
+#include <QStatusBar>
 
+#include "dialogs/SettingsDialog.h"
 #include "MainWindow.h"
 
 namespace vpin::editor {
@@ -9,14 +11,11 @@ namespace vpin::editor {
    MainWindow::MainWindow(QWidget* parent)
       : QMainWindow(parent)
    {
-      buildMenuBar();
+      buildFileMenuBar();
+      buildEditMenuBar();
    }
 
-   MainWindow::~MainWindow()
-   {
-   }
-
-   void MainWindow::buildMenuBar()
+   void MainWindow::buildFileMenuBar()
    {
       QAction* newAction = new QAction("New");
       newAction->setShortcut(Qt::CTRL | Qt::Key_N);
@@ -35,6 +34,25 @@ namespace vpin::editor {
       fileMenu->addAction(saveAsAction);
       fileMenu->addSeparator();
       fileMenu->addAction(quitAction);
+   }
+
+   void MainWindow::buildEditMenuBar()
+   {
+      QAction* settingsAction = new QAction("Settings");
+      connect(settingsAction, &QAction::triggered, this, &MainWindow::openSettingsDialog);
+
+      QMenu* menu = menuBar()->addMenu("&Settings");
+      menu->addAction(settingsAction);
+   }
+
+   void MainWindow::openSettingsDialog()
+   {
+      SettingsDialog settingsDialog(this);
+      settingsDialog.setModal(true);
+
+      settingsDialog.exec();
+
+      statusBar()->showMessage("Settings have been saved.");
    }
 
    void MainWindow::quitApplication()

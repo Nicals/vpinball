@@ -1,0 +1,59 @@
+#include <QLabel>
+#include <QPushButton>
+#include <QSettings>
+#include <QFormLayout>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QtGlobal>
+#include <qnamespace.h>
+
+#include "../widgets/PathEdit.h"
+#include "./SettingsDialog.h"
+
+
+namespace vpin::editor {
+
+   SettingsDialog::SettingsDialog(QWidget* parent)
+      : QDialog(parent)
+   {
+      // Note: not the best way to get a properly sized window... It should
+      // do for the time being.
+      resize(800, 800);
+
+      QSettings settings;
+
+      m_vpinballExecutablePath = new PathEdit(settings.value("VPinballPath").toString());
+
+      // Settings form
+      QFormLayout* formLayout = new QFormLayout;
+      formLayout->addRow(new QLabel("VPinball executable path:"), m_vpinballExecutablePath);
+
+      // Validation buttons
+      QPushButton* cancelButton = new QPushButton(tr("Cancel"));
+      connect(cancelButton, &QPushButton::clicked, this, &QDialog::close);
+
+      QPushButton* validateButton = new QPushButton(tr("Ok"));
+      connect(validateButton, &QPushButton::clicked, this, &SettingsDialog::saveAndClose);
+
+      // Setting up layout
+      QHBoxLayout* controlLayout = new QHBoxLayout;
+      controlLayout->addStretch();
+      controlLayout->addWidget(cancelButton);
+      controlLayout->addWidget(validateButton);
+
+      QVBoxLayout* mainLayout = new QVBoxLayout();
+      mainLayout->addLayout(formLayout);
+      mainLayout->addLayout(controlLayout);
+
+      setLayout(mainLayout);
+   }
+
+   void SettingsDialog::saveAndClose()
+   {
+      QSettings settings;
+
+      settings.setValue("VPinballPath", m_vpinballExecutablePath->text());
+
+      close();
+   }
+}
