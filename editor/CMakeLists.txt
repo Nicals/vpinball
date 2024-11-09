@@ -7,6 +7,12 @@ project(vpinball-editor
   LANGUAGES CXX
 )
 
+find_package(Qt6 REQUIRED
+  COMPONENTS Core Widgets
+)
+
+qt_standard_project_setup()
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
