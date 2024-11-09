@@ -17,18 +17,18 @@ namespace vpin::editor {
 
    void MainWindow::buildFileMenuBar()
    {
-      QAction* newAction = new QAction("New");
+      QAction* newAction = new QAction(tr("New"));
       newAction->setShortcut(Qt::CTRL | Qt::Key_N);
-      QAction* saveAction = new QAction("Save");
+      QAction* saveAction = new QAction(tr("Save"));
       saveAction->setShortcut(Qt::CTRL | Qt::Key_S);
-      QAction* saveAsAction = new QAction("Save as");
+      QAction* saveAsAction = new QAction(tr("Save as"));
       saveAsAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_S);
 
-      QAction* quitAction = new QAction("Quit");
+      QAction* quitAction = new QAction(tr("Quit"));
       quitAction->setShortcut(Qt::CTRL | Qt::Key_Q);
       connect(quitAction, &QAction::triggered, this, &MainWindow::quitApplication, Qt::QueuedConnection);
 
-      QMenu* fileMenu = menuBar()->addMenu("&File");
+      QMenu* fileMenu = menuBar()->addMenu(tr("&File"));
       fileMenu->addAction(newAction);
       fileMenu->addAction(saveAction);
       fileMenu->addAction(saveAsAction);
@@ -38,10 +38,10 @@ namespace vpin::editor {
 
    void MainWindow::buildEditMenuBar()
    {
-      QAction* settingsAction = new QAction("Settings");
+      QAction* settingsAction = new QAction(tr("Settings"));
       connect(settingsAction, &QAction::triggered, this, &MainWindow::openSettingsDialog);
 
-      QMenu* menu = menuBar()->addMenu("&Settings");
+      QMenu* menu = menuBar()->addMenu(tr("&Edit"));
       menu->addAction(settingsAction);
    }
 
@@ -52,7 +52,7 @@ namespace vpin::editor {
 
       settingsDialog.exec();
 
-      statusBar()->showMessage("Settings have been saved.");
+      statusBar()->showMessage(tr("Settings have been saved."));
    }
 
    void MainWindow::quitApplication()
