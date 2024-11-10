@@ -2,7 +2,6 @@
 
 #include <QObject>
 
-
 namespace vpin::editor {
 
    class Editor final
@@ -11,6 +10,8 @@ namespace vpin::editor {
       Q_OBJECT
 
       public:
+         Editor();
+
          bool loadTable(const QString& filepath);
          bool hasTableLoaded() const;
 
