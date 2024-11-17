@@ -5,7 +5,8 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QtGlobal>
-#include <qnamespace.h>
+
+#include <settings.h>
 
 #include "../widgets/PathEdit.h"
 #include "./SettingsDialog.h"
@@ -52,7 +53,7 @@ namespace vpin::editor {
    {
       QSettings settings;
 
-      settings.setValue("VPinballPath", m_vpinballExecutablePath->text());
+      settings.setValue(settings::vpinball_executable_path, m_vpinballExecutablePath->text());
 
       close();
    }
