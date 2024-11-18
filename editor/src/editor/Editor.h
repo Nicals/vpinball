@@ -4,13 +4,16 @@
 
 namespace vpin::editor {
 
+   class Adapter;
+
    class Editor final
       : public QObject
    {
       Q_OBJECT
 
       public:
-         Editor();
+         Editor(Adapter* adapter);
+         ~Editor();
 
          bool loadTable(const QString& filepath);
          bool hasTableLoaded() const;
@@ -19,6 +22,7 @@ namespace vpin::editor {
          void tableLoaded();
 
       private:
+         Adapter* m_adapter;
          bool m_loaded = false;
    };
 }

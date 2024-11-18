@@ -1,18 +1,24 @@
-#include <adapter/Table.h>
+#include <adapter/Adapter.h>
 
 #include "Editor.h"
 
 
 namespace vpin::editor {
 
-   Editor::Editor()
-      : QObject()
+   Editor::Editor(Adapter* adapter)
+      : m_adapter{adapter},
+        QObject()
    {
+   }
+
+   Editor::~Editor()
+   {
+      delete m_adapter;
    }
 
    bool Editor::loadTable(const QString& filepath)
    {
-      load_table(filepath.toStdString());
+      m_adapter->loadTable(filepath.toStdString());
       emit tableLoaded();
       return true;
    }
