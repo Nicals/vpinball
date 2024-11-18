@@ -12,7 +12,7 @@ namespace vpin::editor {
 
    bool Editor::loadTable(const QString& filepath)
    {
-      load_table();
+      load_table(filepath.toStdString());
       emit tableLoaded();
       return true;
    }

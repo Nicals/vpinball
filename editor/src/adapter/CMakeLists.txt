@@ -24,20 +24,64 @@ bison_target(vbsparser
     ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/vbscript/parser.tab.h
 )
 
-add_compile_definitions(
-   __STANDALONE__
+add_library(wine STATIC
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/atl/atl.c
 
-   ENABLE_OPENGL
-   ENABLE_SDL_VIDEO
-   ENABLE_SDL_INPUT
-   ENABLE_SDL_GAMECONTROLLER
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/oleaut32/oleaut.c
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/oleaut32/variant.c
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/oleaut32/varformat.c
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/oleaut32/vartype.c
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/oleaut32/safearray.c
 
-   __WINESRC__
-   WINE_UNICODE_NATIVE
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/vbscript/compile.c
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/vbscript/global.c
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/vbscript/interp.c
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/vbscript/lex.c
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/vbscript/regexp.c
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/vbscript/utils.c
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/vbscript/vbdisp.c
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/vbscript/vbregexp.c
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/vbscript/vbscript.c
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/vbscript/vbscript_main.c
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/vbscript/parser.tab.c
 
-   WINE_NO_TRACE_MSGS
-   WINE_NO_DEBUG_MSGS
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/scrrun/dictionary.c
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/scrrun/filesystem.c
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/scrrun/scrrun.c
+
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/kernelbase/locale.c
+
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/wine.c
 )
+
+target_include_directories(wine PUBLIC
+  ${VPINBALL_SOURCE_DIR}
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/include
+  $VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/atl
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/vbscript
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/oleaut32
+  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/kernelbase
+)
+set_property(TARGET wine PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+target_compile_definitions(wine PUBLIC
+  "__forceinline=__attribute__((always_inline)) inline"
+  __STANDALONE
+  __WINESRC__
+  WINE_UNICODE_NATIVE
+
+  WINE_NO_TRACE_MSGS
+  WINE_NO_DEBUG_MSGS
+)
+
+add_compile_definitions(
+  __STANDALONE__
+
+  ENABLE_OPENGL
+  ENABLE_SDL_VIDEO
+  ENABLE_SDL_INPUT
+  ENABLE_SDL_GAMECONTROLLER
+  )
 
 add_library(vpinball SHARED
   ${VPINBALL_SOURCE_DIR}/src/core/def.h
@@ -603,34 +647,6 @@ add_library(vpinball SHARED
   ${VPINBALL_SOURCE_DIR}/standalone/inc/common/Matrix.h
   ${VPINBALL_SOURCE_DIR}/standalone/inc/common/Timer.cpp
   ${VPINBALL_SOURCE_DIR}/standalone/inc/common/Timer.h
-
-  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/atl/atl.c
-
-  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/oleaut32/oleaut.c
-  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/oleaut32/variant.c
-  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/oleaut32/varformat.c
-  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/oleaut32/vartype.c
-  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/oleaut32/safearray.c
-
-  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/vbscript/compile.c
-  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/vbscript/global.c
-  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/vbscript/interp.c
-  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/vbscript/lex.c
-  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/vbscript/regexp.c
-  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/vbscript/utils.c
-  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/vbscript/vbdisp.c
-  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/vbscript/vbregexp.c
-  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/vbscript/vbscript.c
-  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/vbscript/vbscript_main.c
-  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/vbscript/parser.tab.c
-
-  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/scrrun/dictionary.c
-  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/scrrun/filesystem.c
-  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/scrrun/scrrun.c
-
-  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/kernelbase/locale.c
-
-  ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/wine.c
 )
 
 target_include_directories(vpinball PUBLIC
@@ -638,11 +654,6 @@ target_include_directories(vpinball PUBLIC
    ${VPINBALL_SOURCE_DIR}
    ${VPINBALL_SOURCE_DIR}/third-party/include
    ${VPINBALL_SOURCE_DIR}/standalone/inc/pole
-   ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/include
-   ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/atl
-   ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/vbscript
-   ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/oleaut32
-   ${VPINBALL_SOURCE_DIR}/standalone/inc/wine/dlls/kernelbase
    ${VPINBALL_SOURCE_DIR}/media
    ${VPINBALL_SOURCE_DIR}/pin
    ${VPINBALL_SOURCE_DIR}/src
@@ -697,6 +708,7 @@ target_link_libraries(vpinball PUBLIC
    avutil
    swresample
    swscale
+   wine
 )
 
 set_target_properties(vpinball PROPERTIES
