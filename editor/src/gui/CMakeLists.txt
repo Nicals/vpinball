@@ -1,5 +1,4 @@
-qt_add_executable(gui
-  main.cpp
+qt_add_library(gui STATIC
   MainWindow.cpp
   dialogs/SettingsDialog.cpp
   widgets/PathEdit.cpp
@@ -13,9 +12,7 @@ qt_add_resources(gui icons
 )
 
 target_link_libraries(gui
-  PRIVATE Qt6::Widgets editor
+  PUBLIC Qt6::Widgets editor
 )
 
-set_target_properties(gui PROPERTIES
-  OUTPUT_NAME VPinball-editor
-)
+target_include_directories(gui INTERFACE .)

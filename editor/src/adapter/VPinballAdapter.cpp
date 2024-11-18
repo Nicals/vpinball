@@ -2,7 +2,6 @@
 
 #include <core/main.h>
 #include <core/vpinball_h.h>
-#include <utils/Logger.h>
 
 #include <adapter/vpinball/VPinballAdapter.h>
 
@@ -20,10 +19,6 @@ namespace vpin::editor {
       m_vpinball = new VPinball();
       g_pvp = m_vpinball;
       m_vpinball->m_logicalNumberOfProcessors = 1;
-
-      auto logger = Logger::GetInstance();
-      logger->Init();
-      logger->SetupLogger(true);
 
       EditableRegistry::RegisterEditable<Ball>();
       EditableRegistry::RegisterEditable<Bumper>();
@@ -58,8 +53,6 @@ namespace vpin::editor {
          PLOGE << "Refusing to set thread count '" << threadCount << "'. Must be strictly positive.";
          return;
       }
-
-      PLOGE << "Thread count: " << threadCount;
 
       m_vpinball->m_logicalNumberOfProcessors = threadCount;
    }

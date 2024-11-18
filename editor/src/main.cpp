@@ -1,16 +1,21 @@
 #include <QApplication>
 #include <QThread>
 
-#include "MainWindow.h"
+#include <utils/Logger.h>
 
 #include <adapter/vpinball/VPinballAdapter.h>
 #include <Editor.h>
+#include <MainWindow.h>
 
 
 int main(int argc, char* argv[])
 {
    vpin::editor::VPinballAdapter* adapter = new vpin::editor::VPinballAdapter();
    adapter->setThreadCount(QThread::idealThreadCount());
+
+   auto logger = Logger::GetInstance();
+   logger->Init();
+   logger->SetupLogger(true);
 
    vpin::editor::Editor* editor = new vpin::editor::Editor(adapter);
 
