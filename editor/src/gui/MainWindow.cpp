@@ -14,6 +14,7 @@ namespace vpin::editor {
       : m_editor{editor},
         QMainWindow(parent)
    {
+      m_editor->setParent(this);
       buildFileMenuBar();
       buildEditMenuBar();
    }
