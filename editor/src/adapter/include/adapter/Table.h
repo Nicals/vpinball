@@ -15,6 +15,4 @@ namespace vpin::editor
          virtual std::string getName() const = 0;
    };
 
-   void load_table(const std::string& filepath);
-
 }
