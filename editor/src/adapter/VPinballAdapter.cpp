@@ -8,7 +8,7 @@
 #include "VPinTable.h"
 
 
-namespace vpin::editor {
+namespace vpin::adapter {
 
    VPinballAdapter::VPinballAdapter()
    {

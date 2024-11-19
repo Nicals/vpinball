@@ -7,7 +7,7 @@
 
 namespace vpin::editor {
 
-   Editor::Editor(Adapter* adapter)
+   Editor::Editor(vpin::adapter::Adapter* adapter)
       : m_adapter{adapter},
         QObject()
    {

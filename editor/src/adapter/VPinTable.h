@@ -5,7 +5,7 @@
 
 class PinTable;
 
-namespace vpin::editor
+namespace vpin::adapter
 {
 
    class VPinTable

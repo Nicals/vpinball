@@ -6,7 +6,7 @@
 #include <adapter/Table.h>
 
 
-namespace vpin::editor {
+namespace vpin::adapter {
 
    VPinTable::VPinTable(PinTable* table)
       : m_table{table}

@@ -3,9 +3,13 @@
 #include <QObject>
 
 
+namespace vpin::adapter {
+   class Table;
+}
+
+
 namespace vpin::editor
 {
-   class Table;
 
    class TableEdit final
       : public QObject
@@ -13,7 +17,7 @@ namespace vpin::editor
       Q_OBJECT;
 
       public:
-         TableEdit(Table* table, QObject* parent = nullptr);
+         TableEdit(vpin::adapter::Table* table, QObject* parent = nullptr);
          ~TableEdit();
 
          bool isDirty() const;
@@ -26,7 +30,7 @@ namespace vpin::editor
 
       private:
          bool m_dirty = false;
-         Table* m_table;
+         vpin::adapter::Table* m_table;
    };
 
 }

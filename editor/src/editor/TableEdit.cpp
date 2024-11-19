@@ -6,7 +6,7 @@
 
 namespace vpin::editor {
 
-   TableEdit::TableEdit(Table* table, QObject* parent)
+   TableEdit::TableEdit(vpin::adapter::Table* table, QObject* parent)
       : m_table{table},
         QObject{parent}
    {

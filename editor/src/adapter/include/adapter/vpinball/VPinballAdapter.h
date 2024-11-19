@@ -8,7 +8,7 @@
 class VPinball;
 
 
-namespace vpin::editor {
+namespace vpin::adapter {
 
    class VPinballAdapter final
       : public Adapter

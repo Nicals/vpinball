@@ -10,7 +10,7 @@
 
 int main(int argc, char* argv[])
 {
-   vpin::editor::VPinballAdapter* adapter = new vpin::editor::VPinballAdapter();
+   vpin::adapter::VPinballAdapter* adapter = new vpin::adapter::VPinballAdapter();
    adapter->setThreadCount(QThread::idealThreadCount());
 
    auto logger = Logger::GetInstance();

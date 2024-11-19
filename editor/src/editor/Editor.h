@@ -4,9 +4,12 @@
 
 #include <QObject>
 
+namespace vpin::adapter {
+   class Adapter;
+}
+
 namespace vpin::editor {
 
-   class Adapter;
    class TableEdit;
 
    class Editor final
@@ -15,7 +18,7 @@ namespace vpin::editor {
       Q_OBJECT
 
       public:
-         Editor(Adapter* adapter);
+         Editor(vpin::adapter::Adapter* adapter);
          ~Editor();
 
          bool loadTable(const QString& filepath);
@@ -27,7 +30,7 @@ namespace vpin::editor {
          void activeTableChanged();
 
       private:
-         Adapter* m_adapter;
+         vpin::adapter::Adapter* m_adapter;
 
          std::vector<TableEdit*> m_tables;
          TableEdit* m_activeTable = nullptr;

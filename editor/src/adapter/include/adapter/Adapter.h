@@ -3,7 +3,7 @@
 #include <string>
 
 
-namespace vpin::editor {
+namespace vpin::adapter {
 
    class Table;
 
