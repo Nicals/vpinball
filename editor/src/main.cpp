@@ -2,11 +2,11 @@
 #include <QCommandLineParser>
 #include <QThread>
 
-#include <utils/Logger.h>
-
 #include <vpinball/VPinballAdapter.h>
 #include <Editor.h>
 #include <MainWindow.h>
+
+#include "PlogBridge.h"
 
 
 int main(int argc, char* argv[])
@@ -33,9 +33,7 @@ int main(int argc, char* argv[])
    vpin::adapter::VPinballAdapter* adapter = new vpin::adapter::VPinballAdapter();
    adapter->setThreadCount(QThread::idealThreadCount());
 
-   auto logger = Logger::GetInstance();
-   logger->Init();
-   logger->SetupLogger(true);
+   vpin::editor::configureLogger();
 
    vpin::editor::Editor* editor = new vpin::editor::Editor(adapter);
    vpin::editor::MainWindow window(editor);
