@@ -18,7 +18,6 @@ namespace vpin::editor {
 
       m_vpinball = new VPinball();
       g_pvp = m_vpinball;
-      m_vpinball->m_logicalNumberOfProcessors = 1;
 
       EditableRegistry::RegisterEditable<Ball>();
       EditableRegistry::RegisterEditable<Bumper>();
@@ -54,7 +53,7 @@ namespace vpin::editor {
          return;
       }
 
-      m_vpinball->m_logicalNumberOfProcessors = threadCount;
+      m_vpinball->SetLogicalNumberOfProcessors(threadCount);
    }
 
    Table* VPinballAdapter::loadTable(const std::string& filepath)
