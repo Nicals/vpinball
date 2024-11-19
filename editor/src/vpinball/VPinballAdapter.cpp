@@ -3,7 +3,7 @@
 #include <core/main.h>
 #include <core/vpinball_h.h>
 
-#include <adapter/vpinball/VPinballAdapter.h>
+#include <vpinball/VPinballAdapter.h>
 
 #include "VPinTable.h"
 

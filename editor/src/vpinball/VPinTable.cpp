@@ -1,9 +1,10 @@
-#include "editor/src/adapter/VPinTable.h"
 #include <core/stdafx.h>
 #include <core/main.h>
 #include <utils/Logger.h>
 
 #include <adapter/Table.h>
+
+#include "VPinTable.h"
 
 
 namespace vpin::adapter {

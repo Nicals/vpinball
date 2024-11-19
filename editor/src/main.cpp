@@ -3,7 +3,7 @@
 
 #include <utils/Logger.h>
 
-#include <adapter/vpinball/VPinballAdapter.h>
+#include <vpinball/VPinballAdapter.h>
 #include <Editor.h>
 #include <MainWindow.h>
 
