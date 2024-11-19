@@ -10,6 +10,7 @@
 #include <TableEdit.h>
 
 #include "TableMetaDialog.h"
+#include "sizes.h"
 
 
 namespace vpin::editor {
@@ -19,6 +20,7 @@ namespace vpin::editor {
         QDialog{parent}
    {
       setWindowTitle(tr("Table metadata: %1").arg(m_table->getName()));
+      sizeLargeDialog(this);
 
       QStackedWidget* stack = new QStackedWidget(this);
       stack->addWidget(createGeneralForm());

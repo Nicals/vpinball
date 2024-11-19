@@ -9,7 +9,8 @@
 #include <settings.h>
 
 #include "../widgets/PathEdit.h"
-#include "./SettingsDialog.h"
+#include "SettingsDialog.h"
+#include "sizes.h"
 
 
 namespace vpin::editor {
@@ -17,9 +18,7 @@ namespace vpin::editor {
    SettingsDialog::SettingsDialog(QWidget* parent)
       : QDialog(parent)
    {
-      // Note: not the best way to get a properly sized window... It should
-      // do for the time being.
-      resize(800, 800);
+      sizeLargeDialog(this);
 
       QSettings settings;
 
