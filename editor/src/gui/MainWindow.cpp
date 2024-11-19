@@ -6,6 +6,7 @@
 #include <QStatusBar>
 
 #include "dialogs/SettingsDialog.h"
+#include "dialogs/TableMetaDialog.h"
 #include "MainWindow.h"
 
 namespace vpin::editor {
@@ -53,10 +54,19 @@ namespace vpin::editor {
 
    void MainWindow::buildEditMenuBar()
    {
+      QAction* tableMetaAction = new QAction(tr("Table meta"));
+      tableMetaAction->setDisabled(!m_editor->hasTableLoaded());
+      connect(m_editor, &Editor::tableLoaded, tableMetaAction, [tableMetaAction]() {
+         tableMetaAction->setEnabled(true);
+      });
+      connect(tableMetaAction, &QAction::triggered, this, &MainWindow::openTableMetaDialog);
+
       QAction* settingsAction = new QAction(tr("Settings"));
       connect(settingsAction, &QAction::triggered, this, &MainWindow::openSettingsDialog);
 
       QMenu* menu = menuBar()->addMenu(tr("&Edit"));
+      menu->addAction(tableMetaAction);
+      menu->addSeparator();
       menu->addAction(settingsAction);
    }
 
@@ -77,6 +87,19 @@ namespace vpin::editor {
       {
          QMessageBox::critical(this, tr("Error"), tr("Failed to load vpx table %1").arg(filepath));
       }
+   }
+
+   void MainWindow::openTableMetaDialog()
+   {
+      if (!m_editor->hasTableLoaded()) {
+         qWarning("Cannot open table meta dialog when no table has been loaded.");
+         return;
+      }
+
+      TableMetaDialog dialog(m_editor->getActiveTable(), this);
+      dialog.setModal(true);
+
+      dialog.exec();
    }
 
    void MainWindow::openSettingsDialog()

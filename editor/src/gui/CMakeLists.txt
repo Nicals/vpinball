@@ -1,6 +1,7 @@
 qt_add_library(gui STATIC
   MainWindow.cpp
   dialogs/SettingsDialog.cpp
+  dialogs/TableMetaDialog.cpp
   widgets/PathEdit.cpp
 )
 

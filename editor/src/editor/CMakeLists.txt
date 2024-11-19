@@ -1,5 +1,6 @@
 qt_add_library(editor STATIC
   Editor.cpp
+  TableEdit.cpp
 )
 
 target_link_libraries(editor PRIVATE Qt6::Core PUBLIC adapter)

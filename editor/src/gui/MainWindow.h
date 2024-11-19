@@ -22,6 +22,7 @@ namespace vpin::editor {
 
       public slots:
          void loadTable();
+         void openTableMetaDialog();
          void openSettingsDialog();
          void quitApplication();
 
