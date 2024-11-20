@@ -19,6 +19,6 @@ namespace vpin::editor {
          QMutex m_mutex;
    };
 
-   void configureLogger();
+   void bridgePlog(bool verbose = true);
 
 }

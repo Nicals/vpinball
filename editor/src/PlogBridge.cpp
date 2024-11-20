@@ -1,10 +1,9 @@
 #include <QDebug>
-#include <QTextStream>
 
-#include <qdebug.h>
 #include <utils/Logger.h>
 
 #include "PlogBridge.h"
+#include "Severity.h"
 
 
 namespace vpin::editor {
@@ -13,70 +12,36 @@ namespace vpin::editor {
    {
       m_mutex.lock();
 
-      tm time;
-      plog::util::localtime_s(&time, &record.getTime().time);
-
-      QString message;
-      QString level;
-
-      switch (record.getSeverity()) {
-         case plog::none:
-            level = "none";
-            break;
-         case plog::verbose:
-            level = "verbose";
-            break;
-         case plog::debug:
-            level = "debug";
-            break;;
-         case plog::info:
-            level = "info";
-            break;;
-         case plog::warning:
-            level = "warning";
-            break;
-         case plog::error:
-            level = "critical";
-            break;
-         case plog::fatal:
-            level = "fatal";
-            break;
-      }
-
-      QTextStream ss(&message);
-      ss << "["
-         << QString::number(time.tm_hour).rightJustified(2, '0')
-         << ":" << QString::number(time.tm_min).rightJustified(2, '0')
-         << ":" << QString::number(time.tm_sec).rightJustified(2, '0')
-         << "." << QString::number(record.getTime().millitm).rightJustified(3, '0')
-         << "] [VPinball] [" << level << "] " << record.getMessage();
+      QMessageLogger logger(record.getFile(), record.getLine(), record.getFunc(), "VPinball");
 
       switch (record.getSeverity()) {
          case plog::debug:
          case plog::none:
          case plog::verbose:
-            qDebug(qUtf8Printable(message));
+            logger.debug() << qUtf8Printable(record.getMessage());
             break;
          case plog::info:
-            qInfo(qUtf8Printable(message));
+            logger.info() << qUtf8Printable(record.getMessage());
             break;
          case plog::warning:
-            qWarning(qUtf8Printable(message));
+            logger.warning() << qUtf8Printable(record.getMessage());
             break;
          case plog::error:
-            qCritical(qUtf8Printable(message));
+            logger.critical() << qUtf8Printable(record.getMessage());
             break;
          case plog::fatal:
             // Will terminate the application. This may not be the behavior we want.
-            qFatal(qUtf8Printable(message));
+            logger.fatal() << qUtf8Printable(record.getMessage());
             break;
       }
       m_mutex.unlock();
    }
 
 
-   void configureLogger()
+   void bridgePlog(bool verbose)
    {
+      plog::Severity maxSeverity = verbose ? plog::info : plog::warning;
+
       static bool initialized = false;
       if (initialized) {
          return;
@@ -88,7 +53,7 @@ namespace vpin::editor {
       static vpin::editor::PlogBridge qtAppender;
 
       plog::Logger<PLOG_DEFAULT_INSTANCE_ID>::getInstance()->addAppender(&qtAppender);
-      plog::Logger<PLOG_DEFAULT_INSTANCE_ID>::getInstance()->setMaxSeverity(plog::info);
+      plog::Logger<PLOG_DEFAULT_INSTANCE_ID>::getInstance()->setMaxSeverity(maxSeverity);
       
       initialized = true;
    }
