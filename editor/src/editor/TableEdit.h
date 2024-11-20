@@ -28,9 +28,12 @@ namespace vpin::editor
          QString getName() const;
 
       signals:
+         void dirtyStateChanged(bool);
          void nameChanged(QString);
 
       private:
+         void markDirty();
+
          QUuid m_id;
          bool m_dirty = false;
          vpin::adapter::Table* m_table;

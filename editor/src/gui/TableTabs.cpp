@@ -13,6 +13,8 @@ namespace vpin::editor {
       : m_editor{editor},
         QTabWidget{parent}
    {
+      tabBar()->setIconSize(QSize(8, 8));
+
       connect(m_editor, &Editor::tableLoaded, this, &TableTabs::createNewTableTab);
    }
 
@@ -24,6 +26,7 @@ namespace vpin::editor {
       page->setProperty("tableId", tableId);
 
       int tabIndex = addTab(page, table->getName());
+      setTabIcon(tabIndex, table->isDirty() ? QIcon(":/icons/solid/asterisk.svg") : QIcon());
       setTabToolTip(tabIndex, table->getName());
 
       connect(table, &TableEdit::nameChanged, [this, page](const QString& tableName) {
@@ -35,6 +38,16 @@ namespace vpin::editor {
 
          setTabText(tabIndex, tableName);
          setTabToolTip(tabIndex, tableName);
+      });
+
+      connect(table, &TableEdit::dirtyStateChanged, [this, page](bool isDirty) {
+         int tabIndex = indexOf(page);
+         if (tabIndex == -1 ) {
+            qWarning() << "Received TableEdit::dirtyStateChange event with no associated tab";
+            return;
+         }
+
+         setTabIcon(tabIndex, isDirty ? QIcon(":/icons/solid/asterisk.svg") : QIcon());
       });
    }
 

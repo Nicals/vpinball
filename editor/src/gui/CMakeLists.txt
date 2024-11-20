@@ -13,6 +13,7 @@ qt_add_resources(gui icons
   BASE ./resources/icons/svgs/
   FILES
     ./resources/icons/svgs/regular/folder-open.svg
+    ./resources/icons/svgs/solid/asterisk.svg
 )
 
 target_link_libraries(gui

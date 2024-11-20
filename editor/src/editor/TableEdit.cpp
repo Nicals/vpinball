@@ -31,14 +31,24 @@ namespace vpin::editor {
    void TableEdit::setName(const QString& name)
    {
       m_table->setName(name.toStdString());
-      m_dirty = true;
 
       emit nameChanged(name);
+      markDirty();
    }
 
    QString TableEdit::getName() const
    {
       return QString::fromStdString(m_table->getName());
+   }
+
+   void TableEdit::markDirty()
+   {
+      bool wasDirty = m_dirty;
+      m_dirty = true;
+
+      if (!wasDirty) {
+         emit dirtyStateChanged(true);
+      }
    }
 
 }
