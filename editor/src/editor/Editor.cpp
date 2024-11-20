@@ -31,6 +31,7 @@ namespace vpin::editor {
          m_adapter->loadTable(filepath.toStdString()),
          this
       );
+      table->setFilepath(filepath);
       m_tables.insert(table->getId(), table);
 
       qDebug() << "Table" << table->getName()
@@ -38,6 +39,22 @@ namespace vpin::editor {
          << table->getId().toString(QUuid::WithoutBraces);
 
       emit tableLoaded(table->getId());
+
+      return true;
+   }
+
+   bool Editor::saveTable(const QUuid& tableId, const QString& filepath)
+   {
+      TableEdit* table = getTable(tableId);
+
+      if (filepath.isEmpty()) {
+         qCritical() << "Cannot save to empty filepath";
+         return false;
+      }
+
+      qCritical() << "Saving tables is not yet implemented";
+      table->setFilepath(filepath);
+      table->commit();
 
       return true;
    }

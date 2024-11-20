@@ -23,6 +23,7 @@ namespace vpin::editor {
          ~Editor();
 
          bool loadTable(const QString& filepath);
+         bool saveTable(const QUuid& tableId, const QString& filepath);
          unsigned int getTableCount() const;
          bool hasTableLoaded() const;
          TableEdit* getTable(const QUuid& id);

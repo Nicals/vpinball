@@ -28,6 +28,26 @@ namespace vpin::editor {
       return m_dirty;
    }
 
+   void TableEdit::commit()
+   {
+      if (!m_dirty) {
+         return;
+      }
+
+      m_dirty = false;
+      emit dirtyStateChanged(false);
+   }
+
+   const QString& TableEdit::getFilepath() const
+   {
+      return m_filepath;
+   }
+
+   void TableEdit::setFilepath(const QString& filepath)
+   {
+      m_filepath = filepath;
+   }
+
    void TableEdit::setName(const QString& name)
    {
       m_table->setName(name.toStdString());
@@ -43,12 +63,12 @@ namespace vpin::editor {
 
    void TableEdit::markDirty()
    {
-      bool wasDirty = m_dirty;
-      m_dirty = true;
-
-      if (!wasDirty) {
-         emit dirtyStateChanged(true);
+      if (m_dirty) {
+         return;
       }
+
+      m_dirty = true;
+      emit dirtyStateChanged(true);
    }
 
 }

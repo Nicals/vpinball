@@ -2,10 +2,11 @@
 
 #include <QMainWindow>
 
-#include <Editor.h>
-
 
 namespace vpin::editor {
+
+   class Editor;
+   class TableEdit;
 
    class MainWindow final
       : public QMainWindow
@@ -18,11 +19,16 @@ namespace vpin::editor {
       private:
          void buildFileMenuBar();
          void buildEditMenuBar();
+         TableEdit* getActiveTable();
 
       public slots:
          void loadTable();
+         void saveCurrentTable();
+         void saveCurrentTableInNewFile();
+
          void openTableMetaDialog();
          void openSettingsDialog();
+
          void quitApplication();
 
       private:

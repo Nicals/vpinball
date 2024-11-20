@@ -5,6 +5,9 @@
 #include <QMessageBox>
 #include <QStatusBar>
 
+#include <Editor.h>
+#include <TableEdit.h>
+
 #include "dialogs/SettingsDialog.h"
 #include "dialogs/TableMetaDialog.h"
 #include "MainWindow.h"
@@ -36,6 +39,7 @@ namespace vpin::editor {
       connect(m_editor, &Editor::tableLoaded, saveAction, [saveAction]() {
          saveAction->setEnabled(true);
       });
+      connect(saveAction, &QAction::triggered, this, &MainWindow::saveCurrentTable);
 
       QAction* saveAsAction = new QAction(tr("Save as"));
       saveAsAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_S);
@@ -43,6 +47,7 @@ namespace vpin::editor {
       connect(m_editor, &Editor::tableLoaded, saveAsAction, [saveAsAction]() {
          saveAsAction->setEnabled(true);
       });
+      connect(saveAsAction, &QAction::triggered, this, &MainWindow::saveCurrentTableInNewFile);
 
       QAction* quitAction = new QAction(tr("Quit"));
       quitAction->setShortcut(Qt::CTRL | Qt::Key_Q);
@@ -74,6 +79,23 @@ namespace vpin::editor {
       menu->addAction(settingsAction);
    }
 
+   TableEdit* MainWindow::getActiveTable()
+   {
+      QWidget* currentTab = m_tabs->currentWidget();
+      if (currentTab == nullptr) {
+         qCritical("Cannot open table meta dialog: no curent table.");
+         return nullptr;
+      }
+
+      QVariant tableId = currentTab->property("tableId");
+      if (!tableId.isValid()) {
+         qCritical("Cannot open table meta dialog: current widget has no tableId property.");
+         return nullptr;
+      }
+
+      return m_editor->getTable(tableId.value<QUuid>());
+   }
+
    void MainWindow::loadTable()
    {
       QString filepath = QFileDialog::getOpenFileName(
@@ -93,21 +115,52 @@ namespace vpin::editor {
       }
    }
 
+   void MainWindow::saveCurrentTable()
+   {
+      TableEdit* table = getActiveTable();
+      if (table == nullptr) {
+         return;
+      }
+
+      if (table->getFilepath().isEmpty()) {
+         return saveCurrentTableInNewFile();
+      }
+
+      if (m_editor->saveTable(table->getId(), table->getFilepath())) {
+         statusBar()->showMessage(tr("Table saved as %1").arg(table->getFilepath()));
+      }
+      else {
+         QMessageBox::critical(this, tr("Error"), tr("We failed to save the table :("));
+      }
+   }
+
+   void MainWindow::saveCurrentTableInNewFile()
+   {
+      TableEdit* table = getActiveTable();
+      if (table == nullptr) {
+         return;
+      }
+
+      QString filepath = QFileDialog::getSaveFileName(
+         this, tr("Save VPX file"), table->getFilepath(), "VPX tables (*.vpx)"
+      );
+
+      if (m_editor->saveTable(table->getId(), filepath)) {
+         statusBar()->showMessage(tr("Table saved as %1").arg(table->getFilepath()));
+      }
+      else {
+         QMessageBox::critical(this, tr("Error"), tr("We failed to save the table :("));
+      }
+   }
+
    void MainWindow::openTableMetaDialog()
    {
-      QWidget* currentTab = m_tabs->currentWidget();
-      if (currentTab == nullptr) {
-         qCritical("Cannot open table meta dialog: no curent table.");
+      TableEdit* table = getActiveTable();
+      if (table == nullptr) {
          return;
       }
 
-      QVariant tableId = currentTab->property("tableId");
-      if (!tableId.isValid()) {
-         qCritical("Cannot open table meta dialog: current widget has no tableId property.");
-         return;
-      }
-
-      TableMetaDialog dialog(m_editor->getTable(tableId.value<QUuid>()), this);
+      TableMetaDialog dialog(table, this);
       dialog.setModal(true);
 
       dialog.exec();

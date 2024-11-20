@@ -23,6 +23,9 @@ namespace vpin::editor
 
          const QUuid& getId() const;
          bool isDirty() const;
+         void commit();
+         const QString& getFilepath() const;
+         void setFilepath(const QString& filepath);
 
          void setName(const QString& name);
          QString getName() const;
@@ -36,6 +39,8 @@ namespace vpin::editor
 
          QUuid m_id;
          bool m_dirty = false;
+         QString m_filepath;
+
          vpin::adapter::Table* m_table;
    };
 
