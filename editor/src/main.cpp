@@ -3,7 +3,6 @@
 #include <QLoggingCategory>
 #include <QThread>
 
-#include <qlogging.h>
 #include <vpinball/VPinballAdapter.h>
 #include <Editor.h>
 #include <MainWindow.h>
@@ -22,7 +21,7 @@ void configureLogger(bool verbose=false)
    }
    pattern << "- %{message}";
 
-   vpin::editor::bridgePlog(verbose);
+   vpin::editor::bridgePlog();
    qSetMessagePattern(pattern.join(' '));
 
    QStringList filters;
