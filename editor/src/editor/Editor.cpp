@@ -63,6 +63,7 @@ namespace vpin::editor {
    void Editor::closeTable(const QUuid& tableId)
    {
       TableEdit* table = getTable(tableId);
+      qInfo() << "Closing table" << tableId << ":" << table->getName();
       table->prepareForClosing();
 
       m_tables.take(tableId);
