@@ -24,12 +24,15 @@ namespace vpin::editor {
 
          bool loadTable(const QString& filepath);
          bool saveTable(const QUuid& tableId, const QString& filepath);
+         void closeTable(const QUuid& tableId);
          unsigned int getTableCount() const;
          bool hasTableLoaded() const;
          TableEdit* getTable(const QUuid& id);
 
       signals:
+         void tableClosed();
          void tableLoaded(const QUuid&);
+         void tableCountChanged(int);
 
       private:
          vpin::adapter::Adapter* m_adapter;

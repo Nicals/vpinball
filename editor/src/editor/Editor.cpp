@@ -39,6 +39,7 @@ namespace vpin::editor {
          << table->getId().toString(QUuid::WithoutBraces);
 
       emit tableLoaded(table->getId());
+      emit tableCountChanged(m_tables.count());
 
       return true;
    }
@@ -57,6 +58,17 @@ namespace vpin::editor {
       table->commit();
 
       return true;
+   }
+
+   void Editor::closeTable(const QUuid& tableId)
+   {
+      TableEdit* table = getTable(tableId);
+      table->prepareForClosing();
+
+      m_tables.take(tableId);
+      emit tableClosed();
+      emit tableCountChanged(m_tables.count());
+      qCritical() << "Closing table is not implemented on adapter side.";
    }
 
    unsigned int Editor::getTableCount() const

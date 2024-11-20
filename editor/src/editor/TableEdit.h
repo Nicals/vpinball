@@ -26,11 +26,13 @@ namespace vpin::editor
          void commit();
          const QString& getFilepath() const;
          void setFilepath(const QString& filepath);
+         void prepareForClosing();
 
          void setName(const QString& name);
          QString getName() const;
 
       signals:
+         void aboutToClose();
          void dirtyStateChanged(bool);
          void nameChanged(QString);
 

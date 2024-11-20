@@ -23,8 +23,9 @@ namespace vpin::editor {
 
       public slots:
          void loadTable();
-         void saveCurrentTable();
-         void saveCurrentTableInNewFile();
+         bool saveCurrentTable();
+         bool saveCurrentTableInNewFile();
+         void closeActiveTable();
 
          void openTableMetaDialog();
          void openSettingsDialog();

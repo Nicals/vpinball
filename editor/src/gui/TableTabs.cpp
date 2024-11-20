@@ -49,6 +49,15 @@ namespace vpin::editor {
 
          setTabIcon(tabIndex, isDirty ? QIcon(":/icons/solid/asterisk.svg") : QIcon());
       });
+
+      connect(table, &TableEdit::aboutToClose, [this, page]() {
+         int tabIndex = indexOf(page);
+         if (tabIndex == -1) {
+            qWarning() << "Received TableEdit::aboutToClose event with no associated tab";
+         }
+
+         removeTab(tabIndex);
+      });
    }
 
 }

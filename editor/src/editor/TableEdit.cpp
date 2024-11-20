@@ -48,6 +48,11 @@ namespace vpin::editor {
       m_filepath = filepath;
    }
 
+   void TableEdit::prepareForClosing()
+   {
+      emit aboutToClose();
+   }
+
    void TableEdit::setName(const QString& name)
    {
       m_table->setName(name.toStdString());
