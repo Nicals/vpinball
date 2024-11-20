@@ -1,8 +1,10 @@
 #include <QLoggingCategory>
+#include <QMutex>
 
 #include <utils/Logger.h>
 
 #include "PlogBridge.h"
+#include "Appenders/IAppender.h"
 #include "Severity.h"
 
 
@@ -18,33 +20,43 @@ Q_LOGGING_CATEGORY(VPinballCategory, "vpinball");
 
 namespace vpin::editor {
 
-   void PlogBridge::write(const plog::Record& record)
+   /**
+    * A bridge between plog library and Qt logging system.
+    */
+   class QtAppender: public plog::IAppender
    {
-      m_mutex.lock();
-      auto message = qUtf8Printable(record.getMessage());
+      public:
+         void write(const plog::Record& record) override
+         {
+            m_mutex.lock();
+            auto message = qUtf8Printable(record.getMessage());
 
-      switch (record.getSeverity()) {
-         case plog::debug:
-         case plog::none:
-         case plog::verbose:
-            PLOG_QLOG(VPinballCategory, QtDebugMsg, record).debug() << message;
-            break;
-         case plog::info:
-            PLOG_QLOG(VPinballCategory, QtInfoMsg, record).info() << message;
-            break;
-         case plog::warning:
-            PLOG_QLOG(VPinballCategory, QtWarningMsg, record).warning() << message;
-            break;
-         case plog::error:
-            PLOG_QLOG(VPinballCategory, QtCriticalMsg, record).critical() << message;
-            break;
-         case plog::fatal:
-            // Will terminate the application. This may not be the behavior we want.
-            PLOG_QLOG(VPinballCategory, QtFatalMsg, record).fatal() << message;
-            break;
-      }
-      m_mutex.unlock();
-   }
+            switch (record.getSeverity()) {
+               case plog::debug:
+               case plog::none:
+               case plog::verbose:
+                  PLOG_QLOG(VPinballCategory, QtDebugMsg, record).debug() << message;
+                  break;
+               case plog::info:
+                  PLOG_QLOG(VPinballCategory, QtInfoMsg, record).info() << message;
+                  break;
+               case plog::warning:
+                  PLOG_QLOG(VPinballCategory, QtWarningMsg, record).warning() << message;
+                  break;
+               case plog::error:
+                  PLOG_QLOG(VPinballCategory, QtCriticalMsg, record).critical() << message;
+                  break;
+               case plog::fatal:
+                  // Will terminate the application. This may not be the behavior we want.
+                  PLOG_QLOG(VPinballCategory, QtFatalMsg, record).fatal() << message;
+                  break;
+            }
+            m_mutex.unlock();
+         }
+
+      private:
+         QMutex m_mutex;
+   };
 
 
    void bridgePlog()
@@ -59,7 +71,7 @@ namespace vpin::editor {
       // to have VPinball default log appender.
       logger->Init();
 
-      static vpin::editor::PlogBridge qtAppender;
+      static QtAppender qtAppender;
 
       plog::Logger<PLOG_DEFAULT_INSTANCE_ID>::getInstance()->addAppender(&qtAppender);
       plog::Logger<PLOG_DEFAULT_INSTANCE_ID>::getInstance()->setMaxSeverity(plog::info);
