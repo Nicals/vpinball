@@ -1,5 +1,8 @@
+#include <QDebug>
+
 #include <adapter/Adapter.h>
 #include <adapter/Table.h>
+#include <quuid.h>
 
 #include "Editor.h"
 #include "TableEdit.h"
@@ -23,31 +26,39 @@ namespace vpin::editor {
 
    bool Editor::loadTable(const QString& filepath)
    {
-      bool startedEmpty = m_activeTable == nullptr;
+      TableEdit* table = new TableEdit(
+         QUuid::createUuid(),
+         m_adapter->loadTable(filepath.toStdString()),
+         this
+      );
+      m_tables.insert(table->getId(), table);
 
-      m_activeTable = new TableEdit(m_adapter->loadTable(filepath.toStdString()), this);
-      m_tables.push_back(m_activeTable);
+      qDebug() << "Table" << table->getName()
+         << "has been loaded and registered as"
+         << table->getId().toString(QUuid::WithoutBraces);
 
-      if (startedEmpty) {
-         emit tableLoaded();
-      }
-      emit activeTableChanged();
+      emit tableLoaded(table->getId());
 
       return true;
    }
 
-   bool Editor::hasTableLoaded() const
+   unsigned int Editor::getTableCount() const
    {
-      return m_activeTable != nullptr;
+      return m_tables.size();
    }
 
-   TableEdit* Editor::getActiveTable()
+   bool Editor::hasTableLoaded() const
    {
-      if (m_activeTable == nullptr) {
-         qCritical("Accessing active table without any loaded table.");
+      return !m_tables.isEmpty();
+   }
+
+   TableEdit* Editor::getTable(const QUuid& id)
+   {
+      if (!m_tables.contains(id)) {
+         qFatal() << "Accessing unknown table" << id;
       }
 
-      return m_activeTable;
+      return m_tables[id];
    }
 
 }

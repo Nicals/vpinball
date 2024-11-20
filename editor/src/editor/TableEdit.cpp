@@ -6,8 +6,9 @@
 
 namespace vpin::editor {
 
-   TableEdit::TableEdit(vpin::adapter::Table* table, QObject* parent)
-      : m_table{table},
+   TableEdit::TableEdit(const QUuid& id, vpin::adapter::Table* table, QObject* parent)
+      : m_id{id},
+        m_table{table},
         QObject{parent}
    {
    }
@@ -15,6 +16,11 @@ namespace vpin::editor {
    TableEdit::~TableEdit()
    {
       delete m_table;
+   }
+
+   const QUuid& TableEdit::getId() const
+   {
+      return m_id;
    }
 
    bool TableEdit::isDirty() const

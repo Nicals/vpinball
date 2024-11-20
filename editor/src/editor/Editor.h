@@ -1,8 +1,9 @@
 #pragma once
 
-#include <vector>
-
+#include <QMap>
+#include <QUuid>
 #include <QObject>
+#include <quuid.h>
 
 namespace vpin::adapter {
    class Adapter;
@@ -22,18 +23,17 @@ namespace vpin::editor {
          ~Editor();
 
          bool loadTable(const QString& filepath);
+         unsigned int getTableCount() const;
          bool hasTableLoaded() const;
-         TableEdit* getActiveTable();
+         TableEdit* getTable(const QUuid& id);
 
       signals:
-         void tableLoaded();
-         void activeTableChanged();
+         void tableLoaded(const QUuid&);
 
       private:
          vpin::adapter::Adapter* m_adapter;
 
-         std::vector<TableEdit*> m_tables;
-         TableEdit* m_activeTable = nullptr;
+         QMap<QUuid, TableEdit*> m_tables;
          bool m_loaded = false;
    };
 }

@@ -8,6 +8,7 @@
 #include "dialogs/SettingsDialog.h"
 #include "dialogs/TableMetaDialog.h"
 #include "MainWindow.h"
+#include "TableTabs.h"
 
 namespace vpin::editor {
 
@@ -18,6 +19,9 @@ namespace vpin::editor {
       m_editor->setParent(this);
       buildFileMenuBar();
       buildEditMenuBar();
+
+      m_tabs = new TableTabs{m_editor};
+      setCentralWidget(m_tabs);
    }
 
    void MainWindow::buildFileMenuBar()
@@ -91,12 +95,19 @@ namespace vpin::editor {
 
    void MainWindow::openTableMetaDialog()
    {
-      if (!m_editor->hasTableLoaded()) {
-         qWarning("Cannot open table meta dialog when no table has been loaded.");
+      QWidget* currentTab = m_tabs->currentWidget();
+      if (currentTab == nullptr) {
+         qCritical("Cannot open table meta dialog: no curent table.");
          return;
       }
 
-      TableMetaDialog dialog(m_editor->getActiveTable(), this);
+      QVariant tableId = currentTab->property("tableId");
+      if (!tableId.isValid()) {
+         qCritical("Cannot open table meta dialog: current widget has no tableId property.");
+         return;
+      }
+
+      TableMetaDialog dialog(m_editor->getTable(tableId.value<QUuid>()), this);
       dialog.setModal(true);
 
       dialog.exec();

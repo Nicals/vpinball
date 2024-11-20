@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QMainWindow>
-#include <qmainwindow.h>
 
 #include <Editor.h>
 
@@ -28,6 +27,7 @@ namespace vpin::editor {
 
       private:
          Editor* m_editor;
+         QTabWidget* m_tabs;
    };
 
 }

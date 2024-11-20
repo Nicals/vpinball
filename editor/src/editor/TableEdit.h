@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QObject>
+#include <QUuid>
 
 
 namespace vpin::adapter {
@@ -17,9 +18,10 @@ namespace vpin::editor
       Q_OBJECT;
 
       public:
-         TableEdit(vpin::adapter::Table* table, QObject* parent = nullptr);
+         TableEdit(const QUuid& id, vpin::adapter::Table* table, QObject* parent = nullptr);
          ~TableEdit();
 
+         const QUuid& getId() const;
          bool isDirty() const;
 
          void setName(const QString& name);
@@ -29,6 +31,7 @@ namespace vpin::editor
          void nameChanged(QString);
 
       private:
+         QUuid m_id;
          bool m_dirty = false;
          vpin::adapter::Table* m_table;
    };
