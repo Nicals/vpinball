@@ -1,7 +1,7 @@
 qt_add_library(gui STATIC
   MainWindow.cpp
   TableTabs.cpp
-  blueprint/TableBlueprint.cpp
+  playfield/Playfield.cpp
   dialogs/SettingsDialog.cpp
   dialogs/TableMetaDialog.cpp
   dialogs/sizes.cpp

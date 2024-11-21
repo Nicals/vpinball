@@ -8,11 +8,11 @@ namespace vpin::editor
 
    class TableEdit;
 
-   class TableBlueprint
+   class Playfield
       : public QWidget
    {
       public:
-         TableBlueprint(TableEdit* table, QWidget* parent=nullptr);
+         Playfield(TableEdit* table, QWidget* parent=nullptr);
 
       private:
          TableEdit* m_table;

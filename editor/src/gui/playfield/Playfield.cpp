@@ -1,11 +1,11 @@
 #include <TableEdit.h>
 
-#include "TableBlueprint.h"
+#include "Playfield.h"
 
 
 namespace vpin::editor {
 
-   TableBlueprint::TableBlueprint(TableEdit* table, QWidget* parent)
+   Playfield::Playfield(TableEdit* table, QWidget* parent)
       : m_table{table},
         QWidget{parent}
    {

@@ -3,7 +3,7 @@
 #include <Editor.h>
 #include <TableEdit.h>
 
-#include "blueprint/TableBlueprint.h"
+#include "playfield/Playfield.h"
 #include "TableTabs.h"
 
 
@@ -22,7 +22,7 @@ namespace vpin::editor {
    {
       TableEdit* table = m_editor->getTable(tableId);
 
-      QWidget* page = new TableBlueprint(table);
+      QWidget* page = new Playfield(table);
       page->setProperty("tableId", tableId);
 
       int tabIndex = addTab(page, table->getName());
