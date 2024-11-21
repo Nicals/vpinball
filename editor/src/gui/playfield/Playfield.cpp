@@ -7,8 +7,12 @@ namespace vpin::editor {
 
    Playfield::Playfield(TableEdit* table, QWidget* parent)
       : m_table{table},
-        QWidget{parent}
+        QGraphicsView{parent}
    {
+      m_scene = new QGraphicsScene;
+      m_scene->addText("Hello scene");
+
+      setScene(m_scene);
    }
 
 }
