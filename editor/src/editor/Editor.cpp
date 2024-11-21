@@ -91,4 +91,15 @@ namespace vpin::editor {
       return m_tables[id];
    }
 
+   bool Editor::hasPendingChanges() const
+   {
+      for (TableEdit* table: m_tables.values()) {
+         if (table->isDirty()) {
+            return true;
+         }
+      }
+
+      return false;
+   }
+
 }

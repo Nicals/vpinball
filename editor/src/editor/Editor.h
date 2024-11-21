@@ -28,6 +28,7 @@ namespace vpin::editor {
          unsigned int getTableCount() const;
          bool hasTableLoaded() const;
          TableEdit* getTable(const QUuid& id);
+         bool hasPendingChanges() const;
 
       signals:
          void tableClosed();

@@ -231,6 +231,22 @@ namespace vpin::editor {
 
    void MainWindow::quitApplication()
    {
+      if (m_editor->hasPendingChanges()) {
+         QMessageBox::StandardButton reply;
+         reply = QMessageBox::warning(
+            this,
+            tr("Pending changes"),
+            tr("Some tables have pending changes. Closing the application will discard any changes. Do you really want to quit now ?"),
+            QMessageBox::Yes | QMessageBox::No
+         );
+
+         if (reply == QMessageBox::No) {
+            return;
+         }
+
+         qInfo() << "Closing editor discarding pending changes";
+      }
+
       qApp->quit();
    }
 }
