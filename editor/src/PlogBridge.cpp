@@ -34,7 +34,6 @@ namespace vpin::editor {
 
             switch (record.getSeverity()) {
                case plog::debug:
-               case plog::none:
                case plog::verbose:
                   PLOG_QLOG(category, QtDebugMsg, record).debug() << qUtf8Printable(record.getMessage());
                   break;
@@ -50,6 +49,8 @@ namespace vpin::editor {
                case plog::fatal:
                   // Will terminate the application. This may not be the behavior we want.
                   PLOG_QLOG(category, QtFatalMsg, record).fatal() << qUtf8Printable(record.getMessage());
+                  break;
+               case plog::none:
                   break;
             }
             m_mutex.unlock();
