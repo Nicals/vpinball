@@ -18,6 +18,8 @@ namespace vpin {
       public:
          Bumper(adapter::Bumper* m_bumper, QObject* parent = nullptr);
 
+         QPointF getPosition() const override;
+
       private:
          adapter::Bumper* m_bumper;
    };

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QPointF>
 #include <QObject>
 
 
@@ -15,6 +16,8 @@ namespace vpin::editor {
 
          void setName(const QString& name);
          const QString& getName() const;
+
+         virtual QPointF getPosition() const = 0;
 
       signals:
          void changed();

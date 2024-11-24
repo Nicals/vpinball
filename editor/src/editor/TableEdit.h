@@ -33,6 +33,8 @@ namespace vpin::editor
          void setName(const QString& name);
          QString getName() const;
 
+         const QList<PlayfieldElement*>& getElements() const;
+
       signals:
          void aboutToClose();
          void dirtyStateChanged(bool);

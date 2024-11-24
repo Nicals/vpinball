@@ -70,6 +70,11 @@ namespace vpin::editor {
       return QString::fromStdString(m_table->getName());
    }
 
+   const QList<PlayfieldElement*>& TableEdit::getElements() const
+   {
+      return m_elements;
+   }
+
    void TableEdit::markDirty()
    {
       if (m_dirty) {

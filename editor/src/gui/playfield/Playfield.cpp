@@ -1,5 +1,7 @@
 #include <TableEdit.h>
 
+#include <playfield/PlayfieldElement.h>
+#include "PlayfieldGraphicsItem.h"
 #include "Playfield.h"
 
 
@@ -10,9 +12,14 @@ namespace vpin::editor {
         QGraphicsView{parent}
    {
       m_scene = new QGraphicsScene;
-      m_scene->addText("Hello scene");
 
       setScene(m_scene);
+
+      for (auto obj: m_table->getElements()) {
+         QGraphicsItem* item = new PlayfieldGraphicsItem(obj);
+         item->setPos(obj->getPosition());
+         m_scene->addItem(item);
+      }
    }
 
 }
