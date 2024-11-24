@@ -1,12 +1,10 @@
 qt_add_library(gui STATIC
   MainWindow.cpp
   TableTabs.cpp
-  playfield/Playfield.cpp
-  dialogs/SettingsDialog.cpp
-  dialogs/TableMetaDialog.cpp
-  dialogs/sizes.cpp
-  widgets/PathEdit.cpp
 )
+add_subdirectory(dialogs)
+add_subdirectory(playfield)
+add_subdirectory(widgets)
 
 qt_add_resources(gui icons
   PREFIX "/icons"
