@@ -8,14 +8,23 @@ namespace vpin::editor
 
    class TableEdit;
 
-   class Playfield
+   class Playfield final
       : public QGraphicsView
    {
       public:
          Playfield(TableEdit* table, QWidget* parent=nullptr);
 
       private:
+         void mousePressEvent(QMouseEvent* event) override;
+         void mouseReleaseEvent(QMouseEvent* event) override;
+         void mouseMoveEvent(QMouseEvent* event) override;
+         void wheelEvent(QWheelEvent* event) override;
+
+      private:
          QGraphicsScene* m_scene;
          TableEdit* m_table;
+
+         bool m_isDragging = false;
+         QPoint m_dragStartPosition;
    };
 }
