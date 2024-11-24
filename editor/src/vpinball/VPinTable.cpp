@@ -133,4 +133,9 @@ namespace vpin::adapter {
    {
       m_table->m_szTableName = name;
    }
+
+   const std::vector<Bumper*> VPinTable::getBumpers() const
+   {
+      return m_bumpers;
+   }
 }

@@ -7,7 +7,7 @@
 namespace vpin::adapter
 {
 
-   class TableElement;
+   class Bumper;
 
    class Table
    {
@@ -17,7 +17,7 @@ namespace vpin::adapter
          virtual void setName(const std::string& name) = 0;
          virtual std::string getName() const = 0;
 
-         std::vector<TableElement*> getElements();
+         virtual const std::vector<Bumper*> getBumpers() const = 0;
    };
 
 }

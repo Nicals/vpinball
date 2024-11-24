@@ -21,7 +21,7 @@ namespace vpin::adapter
          std::string getName() const override;
          void setName(const std::string& name) override;
 
-         const std::vector<Bumper*> getBumpers() const;
+         const std::vector<Bumper*> getBumpers() const override;
 
       private:
          PinTable* m_table;

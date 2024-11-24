@@ -1,6 +1,7 @@
 #include <adapter/Table.h>
 #include <qobject.h>
 
+#include "playfield/Bumper.h"
 #include "TableEdit.h"
 
 
@@ -11,6 +12,9 @@ namespace vpin::editor {
         m_table{table},
         QObject{parent}
    {
+      for (auto bumper: table->getBumpers()) {
+         m_elements.push_back(new Bumper(bumper, this));
+      }
    }
 
    TableEdit::~TableEdit()

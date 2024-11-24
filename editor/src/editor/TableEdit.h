@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QObject>
+#include <QList>
 #include <QUuid>
 
 
@@ -11,6 +12,7 @@ namespace vpin::adapter {
 
 namespace vpin::editor
 {
+   class PlayfieldElement;
 
    class TableEdit final
       : public QObject
@@ -44,6 +46,7 @@ namespace vpin::editor
          QString m_filepath;
 
          vpin::adapter::Table* m_table;
+         QList<PlayfieldElement*> m_elements;
    };
 
 }

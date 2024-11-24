@@ -6,7 +6,7 @@
 namespace vpin::editor {
 
    class PlayfieldElement
-      : QObject
+      : public QObject
    {
       Q_OBJECT;
 
