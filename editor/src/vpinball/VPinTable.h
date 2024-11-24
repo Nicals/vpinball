@@ -8,7 +8,9 @@ class PinTable;
 namespace vpin::adapter
 {
 
-   class VPinTable
+   class Bumper;
+
+   class VPinTable final
       : public Table
    {
       public:
@@ -19,7 +21,11 @@ namespace vpin::adapter
          std::string getName() const override;
          void setName(const std::string& name) override;
 
+         const std::vector<Bumper*> getBumpers() const;
+
       private:
          PinTable* m_table;
+
+         std::vector<Bumper*> m_bumpers;
    };
 }

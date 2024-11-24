@@ -751,9 +751,13 @@ add_custom_command(TARGET vpinball POST_BUILD
 
 # This is the adapter public target to link to
 add_library(adapter_vpinball SHARED
+  VPinBumper.cpp
   VPinTable.cpp
+  VPinTableElement.cpp
   VPinballAdapter.cpp
 )
+
+target_compile_features(adapter_vpinball PUBLIC cxx_std_20)
 
 target_include_directories(adapter_vpinball PUBLIC include)
 

@@ -19,26 +19,26 @@ namespace vpin::adapter {
       m_vpinball = new VPinball();
       g_pvp = m_vpinball;
 
-      EditableRegistry::RegisterEditable<Ball>();
-      EditableRegistry::RegisterEditable<Bumper>();
-      EditableRegistry::RegisterEditable<Decal>();
-      EditableRegistry::RegisterEditable<DispReel>();
-      EditableRegistry::RegisterEditable<Flasher>();
-      EditableRegistry::RegisterEditable<Flipper>();
-      EditableRegistry::RegisterEditable<Gate>();
-      EditableRegistry::RegisterEditable<Kicker>();
-      EditableRegistry::RegisterEditable<Light>();
-      EditableRegistry::RegisterEditable<LightSeq>();
-      EditableRegistry::RegisterEditable<Plunger>();
-      EditableRegistry::RegisterEditable<Primitive>();
-      EditableRegistry::RegisterEditable<Ramp>();
-      EditableRegistry::RegisterEditable<Rubber>();
-      EditableRegistry::RegisterEditable<Spinner>();
-      EditableRegistry::RegisterEditable<Surface>();
-      EditableRegistry::RegisterEditable<Textbox>();
-      EditableRegistry::RegisterEditable<Timer>();
-      EditableRegistry::RegisterEditable<Trigger>();
-      EditableRegistry::RegisterEditable<HitTarget>();
+      EditableRegistry::RegisterEditable<::Ball>();
+      EditableRegistry::RegisterEditable<::Bumper>();
+      EditableRegistry::RegisterEditable<::Decal>();
+      EditableRegistry::RegisterEditable<::DispReel>();
+      EditableRegistry::RegisterEditable<::Flasher>();
+      EditableRegistry::RegisterEditable<::Flipper>();
+      EditableRegistry::RegisterEditable<::Gate>();
+      EditableRegistry::RegisterEditable<::Kicker>();
+      EditableRegistry::RegisterEditable<::Light>();
+      EditableRegistry::RegisterEditable<::LightSeq>();
+      EditableRegistry::RegisterEditable<::Plunger>();
+      EditableRegistry::RegisterEditable<::Primitive>();
+      EditableRegistry::RegisterEditable<::Ramp>();
+      EditableRegistry::RegisterEditable<::Rubber>();
+      EditableRegistry::RegisterEditable<::Spinner>();
+      EditableRegistry::RegisterEditable<::Surface>();
+      EditableRegistry::RegisterEditable<::Textbox>();
+      EditableRegistry::RegisterEditable<::Timer>();
+      EditableRegistry::RegisterEditable<::Trigger>();
+      EditableRegistry::RegisterEditable<::HitTarget>();
    }
 
    VPinballAdapter::~VPinballAdapter()

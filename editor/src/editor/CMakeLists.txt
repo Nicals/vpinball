@@ -1,5 +1,6 @@
 qt_add_library(editor STATIC
   Editor.cpp
+  PlayfieldElement.cpp
   TableEdit.cpp
 )
 
