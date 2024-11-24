@@ -8,6 +8,7 @@
 #include "Severity.h"
 
 
+Q_LOGGING_CATEGORY(VAdapterCategory, "adapter");
 Q_LOGGING_CATEGORY(VPinballCategory, "vpinball");
 
 // Copy-pasted from qloggingcategory.h and added plog::Record.
@@ -29,26 +30,26 @@ namespace vpin::editor {
          void write(const plog::Record& record) override
          {
             m_mutex.lock();
-            auto message = qUtf8Printable(record.getMessage());
+            QLoggingCategory category{QString{record.getFunc()}.startsWith("vpin::adapter::") ? "adapter" : "vpinball"};
 
             switch (record.getSeverity()) {
                case plog::debug:
                case plog::none:
                case plog::verbose:
-                  PLOG_QLOG(VPinballCategory, QtDebugMsg, record).debug() << message;
+                  PLOG_QLOG(category, QtDebugMsg, record).debug() << qUtf8Printable(record.getMessage());
                   break;
                case plog::info:
-                  PLOG_QLOG(VPinballCategory, QtInfoMsg, record).info() << message;
+                  PLOG_QLOG(category, QtInfoMsg, record).info() << qUtf8Printable(record.getMessage());
                   break;
                case plog::warning:
-                  PLOG_QLOG(VPinballCategory, QtWarningMsg, record).warning() << message;
+                  PLOG_QLOG(category, QtWarningMsg, record).warning() << qUtf8Printable(record.getMessage());
                   break;
                case plog::error:
-                  PLOG_QLOG(VPinballCategory, QtCriticalMsg, record).critical() << message;
+                  PLOG_QLOG(category, QtCriticalMsg, record).critical() << qUtf8Printable(record.getMessage());
                   break;
                case plog::fatal:
                   // Will terminate the application. This may not be the behavior we want.
-                  PLOG_QLOG(VPinballCategory, QtFatalMsg, record).fatal() << message;
+                  PLOG_QLOG(category, QtFatalMsg, record).fatal() << qUtf8Printable(record.getMessage());
                   break;
             }
             m_mutex.unlock();
