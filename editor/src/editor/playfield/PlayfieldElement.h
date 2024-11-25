@@ -14,16 +14,14 @@ namespace vpin::editor {
       public:
          PlayfieldElement(QObject* parent = nullptr);
 
-         void setName(const QString& name);
-         const QString& getName() const;
+         virtual void setName(const QString& name) = 0;
+         virtual const QString getName() const = 0;
 
          virtual QPointF getPosition() const = 0;
+         virtual void setPosition(QPointF position) = 0;
 
       signals:
          void changed();
-
-      private:
-         QString m_name;
    };
 
 }

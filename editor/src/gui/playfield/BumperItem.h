@@ -2,22 +2,27 @@
 
 #include <QGraphicsItem>
 
+#include <playfield/Bumper.h>
+
 
 namespace vpin::editor {
 
-   class PlayfieldElement;
+   class Bumper;
+   class DragHandle;
 
-   class PlayfieldGraphicsItem
+   class BumperItem
       : public QGraphicsItem
    {
       public:
-         PlayfieldGraphicsItem(PlayfieldElement* element);
+         BumperItem(Bumper* bumper);
 
          QRectF boundingRect() const override;
          void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
       private:
-         PlayfieldElement* m_element;
+         Bumper* m_bumper;
+
+         DragHandle* m_radiusHandle;
    };
 
 }

@@ -22,4 +22,14 @@ namespace vpin::adapter {
       m_bumper->m_d.m_vCenter.Set(point.x, point.y);
    }
 
+   float VPinBumper::getRadius() const
+   {
+      return m_bumper->m_d.m_radius;
+   }
+
+   void VPinBumper::setRadius(float radius)
+   {
+      m_bumper->m_d.m_radius = radius;
+   }
+
 }

@@ -3,8 +3,9 @@
 
 #include <TableEdit.h>
 
+#include <playfield/Bumper.h>
 #include <playfield/PlayfieldElement.h>
-#include "PlayfieldGraphicsItem.h"
+#include "BumperItem.h"
 #include "Playfield.h"
 
 
@@ -24,9 +25,17 @@ namespace vpin::editor {
       setScene(m_scene);
 
       for (auto obj: m_table->getElements()) {
-         QGraphicsItem* item = new PlayfieldGraphicsItem(obj);
-         item->setPos(obj->getPosition());
-         m_scene->addItem(item);
+         if (QString{obj->metaObject()->className()} == "vpin::editor::Bumper") {
+            QGraphicsItem* item = new BumperItem(qobject_cast<Bumper*>(obj));
+            item->setPos(obj->getPosition());
+            item->setFlag(QGraphicsItem::ItemIsMovable, true);
+            item->setFlag(QGraphicsItem::ItemIsSelectable, true);
+            m_scene->addItem(item);
+         }
+         else
+         {
+            qCritical() << "No playfield item implemented for" << obj->metaObject()->className();
+         }
       }
    }
 

@@ -10,5 +10,8 @@ namespace vpin::adapter {
    {
       public:
          virtual ~Bumper() = default;
+
+         virtual float getRadius() const = 0;
+         virtual void setRadius(float radius) = 0;
    };
 }

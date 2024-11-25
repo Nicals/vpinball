@@ -18,7 +18,13 @@ namespace vpin {
       public:
          Bumper(adapter::Bumper* m_bumper, QObject* parent = nullptr);
 
+         const QString getName() const override;
+         void setName(const QString& name) override;
+
          QPointF getPosition() const override;
+         void setPosition(QPointF position) override;
+         float getRadius() const;
+         void setRadius(float radius);
 
       private:
          adapter::Bumper* m_bumper;

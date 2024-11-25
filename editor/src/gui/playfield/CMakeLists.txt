@@ -1,4 +1,5 @@
 target_sources(gui PRIVATE
+  DragHandle.cpp
   Playfield.cpp
-  PlayfieldGraphicsItem.cpp
+  BumperItem.cpp
 )

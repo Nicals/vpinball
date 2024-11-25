@@ -8,15 +8,4 @@ namespace vpin::editor {
    {
    }
 
-   void PlayfieldElement::setName(const QString& name)
-   {
-      m_name = name;
-      emit changed();
-   }
-
-   const QString& PlayfieldElement::getName() const
-   {
-      return m_name;
-   }
-
 }
