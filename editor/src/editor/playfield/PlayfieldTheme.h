@@ -21,6 +21,9 @@ namespace vpin::editor {
 
          QPen getHandlePen(bool isSelected = false) const;
          QBrush getHandleBrush(bool isSelected = false) const;
+
+      signals:
+         void changed();
    };
 
 }

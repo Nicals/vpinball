@@ -39,6 +39,11 @@ namespace vpin::editor {
             qCritical() << "No playfield item implemented for" << obj->metaObject()->className();
          }
       }
+
+      // Refresh the scene when the theme changes
+      connect(m_theme, &PlayfieldTheme::changed, this, [this]() {
+         this->m_scene->update();
+      });
    }
 
    void Playfield::mousePressEvent(QMouseEvent* event)
