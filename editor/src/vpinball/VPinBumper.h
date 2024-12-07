@@ -20,6 +20,8 @@ namespace vpin::adapter {
          void setPosition(const Point2D& point) override;
          float getRadius() const override;
          void setRadius(float radius) override;
+         float getOrientation() const override;
+         void setOrientation(float degrees) override;
 
       private:
          ::Bumper* m_bumper;

@@ -1,8 +1,10 @@
+#include <QtMath>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
 #include <playfield/Bumper.h>
 #include <playfield/PlayfieldTheme.h>
+#include <qmath.h>
 
 #include "DragHandle.h"
 #include "BumperItem.h"
@@ -15,7 +17,10 @@ namespace vpin::editor {
         m_bumper{bumper}
    {
       m_radiusHandle = new DragHandle{m_theme, this};
-      m_radiusHandle->setPos(bumper->getRadius(), 0.0);
+      m_radiusHandle->setPos(
+         bumper->getRadius() * qCos(qDegreesToRadians(bumper->getOrientation())),
+         bumper->getRadius() * qSin(qDegreesToRadians(bumper->getOrientation()))
+      );
    }
 
    QRectF BumperItem::boundingRect() const

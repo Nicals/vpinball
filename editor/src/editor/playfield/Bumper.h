@@ -25,6 +25,8 @@ namespace vpin {
          void setPosition(QPointF position) override;
          float getRadius() const;
          void setRadius(float radius);
+         float getOrientation() const;
+         void setOrientation(float degrees);
 
       private:
          adapter::Bumper* m_bumper;

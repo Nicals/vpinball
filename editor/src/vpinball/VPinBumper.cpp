@@ -32,4 +32,14 @@ namespace vpin::adapter {
       m_bumper->m_d.m_radius = radius;
    }
 
+   float VPinBumper::getOrientation() const
+   {
+      return m_bumper->m_d.m_orientation;
+   }
+
+   void VPinBumper::setOrientation(float degrees)
+   {
+      m_bumper->m_d.m_orientation = degrees;
+   }
+
 }
