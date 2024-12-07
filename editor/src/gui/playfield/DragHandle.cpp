@@ -1,12 +1,15 @@
 #include <QPainter>
 
+#include <playfield/PlayfieldTheme.h>
+
 #include "DragHandle.h"
 
 
 namespace vpin::editor {
 
-   DragHandle::DragHandle(QGraphicsItem* parent)
-      : QGraphicsItem{parent}
+   DragHandle::DragHandle(PlayfieldTheme* theme, QGraphicsItem* parent)
+      : m_theme{theme},
+        QGraphicsItem{parent}
    {
    }
 
@@ -17,6 +20,8 @@ namespace vpin::editor {
 
    void DragHandle::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
    {
+      painter->setPen(m_theme->getHandlePen());
+      painter->setBrush(m_theme->getHandleBrush());
       painter->drawEllipse(boundingRect());
    }
 

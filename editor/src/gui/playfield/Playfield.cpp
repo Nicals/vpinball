@@ -5,14 +5,16 @@
 
 #include <playfield/Bumper.h>
 #include <playfield/PlayfieldElement.h>
+#include <playfield/PlayfieldTheme.h>
 #include "BumperItem.h"
 #include "Playfield.h"
 
 
 namespace vpin::editor {
 
-   Playfield::Playfield(TableEdit* table, QWidget* parent)
-      : m_table{table},
+   Playfield::Playfield(PlayfieldTheme *theme, TableEdit* table, QWidget* parent)
+      : m_theme{theme},
+        m_table{table},
         QGraphicsView{parent}
    {
       // XXX: Scroll bar always on just to help the dev process. This should
@@ -26,7 +28,7 @@ namespace vpin::editor {
 
       for (auto obj: m_table->getElements()) {
          if (QString{obj->metaObject()->className()} == "vpin::editor::Bumper") {
-            QGraphicsItem* item = new BumperItem(qobject_cast<Bumper*>(obj));
+            QGraphicsItem* item = new BumperItem(m_theme, qobject_cast<Bumper*>(obj));
             item->setPos(obj->getPosition());
             item->setFlag(QGraphicsItem::ItemIsMovable, true);
             item->setFlag(QGraphicsItem::ItemIsSelectable, true);

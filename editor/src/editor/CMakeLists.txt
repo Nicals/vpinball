@@ -4,5 +4,5 @@ qt_add_library(editor STATIC
 )
 add_subdirectory(playfield)
 
-target_link_libraries(editor PRIVATE Qt6::Core PUBLIC adapter::interface)
+target_link_libraries(editor PRIVATE Qt6::Core Qt6::Gui PUBLIC adapter::interface)
 target_include_directories(editor INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})

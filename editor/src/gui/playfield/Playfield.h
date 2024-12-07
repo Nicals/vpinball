@@ -7,12 +7,13 @@ namespace vpin::editor
 {
 
    class TableEdit;
+   class PlayfieldTheme;
 
    class Playfield final
       : public QGraphicsView
    {
       public:
-         Playfield(TableEdit* table, QWidget* parent=nullptr);
+         Playfield(PlayfieldTheme* theme, TableEdit* table, QWidget* parent=nullptr);
 
       private:
          void mousePressEvent(QMouseEvent* event) override;
@@ -22,6 +23,7 @@ namespace vpin::editor
 
       private:
          QGraphicsScene* m_scene;
+         PlayfieldTheme* m_theme;
          TableEdit* m_table;
 
          bool m_isDragging = false;

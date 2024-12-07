@@ -6,6 +6,7 @@
 
 #include "Editor.h"
 #include "TableEdit.h"
+#include "playfield/PlayfieldTheme.h"
 
 
 namespace vpin::editor {
@@ -14,6 +15,7 @@ namespace vpin::editor {
       : m_adapter{adapter},
         QObject()
    {
+      m_theme = new PlayfieldTheme{this};
    }
 
    Editor::~Editor()
@@ -22,6 +24,11 @@ namespace vpin::editor {
       for (auto table: m_tables) {
          delete table;
       }
+   }
+
+   PlayfieldTheme* Editor::getPlayfieldTheme()
+   {
+      return m_theme;
    }
 
    bool Editor::loadTable(const QString& filepath)

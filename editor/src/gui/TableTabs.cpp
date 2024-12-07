@@ -22,7 +22,7 @@ namespace vpin::editor {
    {
       TableEdit* table = m_editor->getTable(tableId);
 
-      QWidget* page = new Playfield(table);
+      QWidget* page = new Playfield(m_editor->getPlayfieldTheme(), table);
       page->setProperty("tableId", tableId);
 
       int tabIndex = addTab(page, table->getName());

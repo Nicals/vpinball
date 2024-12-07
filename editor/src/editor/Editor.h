@@ -12,6 +12,7 @@ namespace vpin::adapter {
 namespace vpin::editor {
 
    class TableEdit;
+   class PlayfieldTheme;
 
    class Editor final
       : public QObject
@@ -21,6 +22,8 @@ namespace vpin::editor {
       public:
          Editor(vpin::adapter::Adapter* adapter);
          ~Editor();
+
+         PlayfieldTheme* getPlayfieldTheme();
 
          bool loadTable(const QString& filepath);
          bool saveTable(const QUuid& tableId, const QString& filepath);
@@ -39,6 +42,7 @@ namespace vpin::editor {
          vpin::adapter::Adapter* m_adapter;
 
          QMap<QUuid, TableEdit*> m_tables;
+         PlayfieldTheme* m_theme;
          bool m_loaded = false;
    };
 }
