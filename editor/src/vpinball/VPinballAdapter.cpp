@@ -1,3 +1,4 @@
+#include <filesystem>
 #include <stdexcept>
 
 #include <core/main.h>
@@ -62,7 +63,12 @@ namespace vpin::adapter {
          throw std::runtime_error("Loading multiple table is sadly not yet implemented :(");
       }
 
+      // VPinball changes the current working directory to load files.
+      // We don't want this.
+      std::filesystem::path cwd = std::filesystem::current_path();
       m_vpinball->LoadFileName(filepath, false);
+      std::filesystem::current_path(cwd);
+
       VPinTable* table = new VPinTable(m_vpinball->GetActiveTable());
       m_tables.push_back(table);
 
