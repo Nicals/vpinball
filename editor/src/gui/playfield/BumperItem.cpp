@@ -21,6 +21,8 @@ namespace vpin::editor {
          bumper->getRadius() * qCos(qDegreesToRadians(bumper->getOrientation())),
          bumper->getRadius() * qSin(qDegreesToRadians(bumper->getOrientation()))
       );
+
+      setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
    }
 
    QRectF BumperItem::boundingRect() const
@@ -40,6 +42,25 @@ namespace vpin::editor {
       const float radius = m_bumper->getRadius();
       painter->setPen(m_theme->getRadiusPen());
       painter->drawEllipse(QRectF{-radius, -radius, radius * 2, radius * 2});
+   }
+
+   QVariant BumperItem::itemChange(GraphicsItemChange change, const QVariant& value)
+   {
+      if (change == GraphicsItemChange::ItemPositionChange) {
+         // Prevent item to be moved to negative position
+         QPointF newPosition = value.toPointF();
+         if (newPosition.x() < 0) {
+            newPosition.setX(0);
+         }
+
+         if (newPosition.y() < 0) {
+            newPosition.setY(0);
+         }
+
+         return newPosition;
+      }
+
+      return QGraphicsItem::itemChange(change, value);
    }
 
 }
