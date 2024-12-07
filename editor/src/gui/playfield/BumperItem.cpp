@@ -50,7 +50,7 @@ namespace vpin::editor {
          return;
       }
 
-      m_bumper->setPosition(pos());
+      emit hasBeenMoved(pos());
    }
 
    QVariant BumperItem::itemChange(GraphicsItemChange change, const QVariant& value)

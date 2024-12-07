@@ -1,5 +1,6 @@
+#include <QUndoStack>
+
 #include <adapter/Table.h>
-#include <qobject.h>
 
 #include "playfield/Bumper.h"
 #include "TableEdit.h"
@@ -12,6 +13,8 @@ namespace vpin::editor {
         m_table{table},
         QObject{parent}
    {
+      m_undoStack = new QUndoStack{this};
+
       for (auto bumper: table->getBumpers()) {
          m_elements.push_back(new Bumper(bumper, this));
       }
@@ -25,6 +28,11 @@ namespace vpin::editor {
    const QUuid& TableEdit::getId() const
    {
       return m_id;
+   }
+
+   QUndoStack* TableEdit::getUndoStack()
+   {
+      return m_undoStack;
    }
 
    bool TableEdit::isDirty() const
@@ -68,6 +76,17 @@ namespace vpin::editor {
    QString TableEdit::getName() const
    {
       return QString::fromStdString(m_table->getName());
+   }
+
+   PlayfieldElement* TableEdit::getElement(const QString& name)
+   {
+      for (auto element: m_elements) {
+         if (element->getName() == name) {
+            return element;
+         }
+      }
+
+      qFatal("Element '%s' not found", name.toStdString().c_str());
    }
 
    const QList<PlayfieldElement*>& TableEdit::getElements() const

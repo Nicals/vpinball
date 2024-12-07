@@ -3,3 +3,5 @@ target_sources(editor PRIVATE
   PlayfieldElement.cpp
   PlayfieldTheme.cpp
 )
+
+add_subdirectory(commands)

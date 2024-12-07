@@ -6,6 +6,7 @@
 namespace vpin::editor
 {
 
+   class Bumper;
    class TableEdit;
    class PlayfieldTheme;
 
@@ -16,6 +17,8 @@ namespace vpin::editor
          Playfield(PlayfieldTheme* theme, TableEdit* table, QWidget* parent=nullptr);
 
       private:
+         void addBumperItem(Bumper* bumper);
+
          void mousePressEvent(QMouseEvent* event) override;
          void mouseReleaseEvent(QMouseEvent* event) override;
          void mouseMoveEvent(QMouseEvent* event) override;

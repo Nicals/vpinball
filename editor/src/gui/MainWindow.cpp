@@ -4,6 +4,7 @@
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QStatusBar>
+#include <QUndoStack>
 
 #include <Editor.h>
 #include <TableEdit.h>
@@ -72,6 +73,22 @@ namespace vpin::editor {
 
    void MainWindow::buildEditMenuBar()
    {
+      QAction* undoAction = new QAction(tr("Undo"));
+      undoAction->setShortcut(Qt::CTRL | Qt::Key_Z);
+      undoAction->setDisabled(!m_editor->hasTableLoaded());
+      connect(m_editor, &Editor::tableCountChanged, undoAction, [undoAction](int tableCount) {
+         undoAction->setEnabled(tableCount > 0);
+      });
+      connect(undoAction, &QAction::triggered, this, &MainWindow::undo);
+
+      QAction* redoAction = new QAction(tr("Redo"));
+      redoAction->setShortcut(Qt::CTRL | Qt::Key_Y);
+      redoAction->setDisabled(!m_editor->hasTableLoaded());
+      connect(m_editor, &Editor::tableCountChanged, redoAction, [redoAction](int tableCount) {
+         redoAction->setEnabled(tableCount > 0);
+      });
+      connect(redoAction, &QAction::triggered, this, &MainWindow::redo);
+
       QAction* tableMetaAction = new QAction(tr("Table meta"));
       tableMetaAction->setDisabled(!m_editor->hasTableLoaded());
       connect(m_editor, &Editor::tableCountChanged, tableMetaAction, [tableMetaAction](int tableCount) {
@@ -83,6 +100,9 @@ namespace vpin::editor {
       connect(settingsAction, &QAction::triggered, this, &MainWindow::openSettingsDialog);
 
       QMenu* menu = menuBar()->addMenu(tr("&Edit"));
+      menu->addAction(undoAction);
+      menu->addAction(redoAction);
+      menu->addSeparator();
       menu->addAction(tableMetaAction);
       menu->addSeparator();
       menu->addAction(settingsAction);
@@ -227,6 +247,26 @@ namespace vpin::editor {
       settingsDialog.exec();
 
       statusBar()->showMessage(tr("Settings have been saved."));
+   }
+
+   void MainWindow::undo()
+   {
+      TableEdit* table = getActiveTable();
+      if (table == nullptr) {
+         return;
+      }
+
+      table->getUndoStack()->undo();
+   }
+
+   void MainWindow::redo()
+   {
+      TableEdit* table = getActiveTable();
+      if (table == nullptr) {
+         return;
+      }
+
+      table->getUndoStack()->redo();
    }
 
    void MainWindow::quitApplication()

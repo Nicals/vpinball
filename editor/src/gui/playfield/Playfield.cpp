@@ -1,6 +1,7 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 
+#include <playfield/commands/SetElementPositionCommand.h>
 #include <TableEdit.h>
 
 #include <playfield/Bumper.h>
@@ -28,11 +29,7 @@ namespace vpin::editor {
 
       for (auto obj: m_table->getElements()) {
          if (QString{obj->metaObject()->className()} == "vpin::editor::Bumper") {
-            QGraphicsItem* item = new BumperItem(m_theme, qobject_cast<Bumper*>(obj));
-            item->setPos(obj->getPosition());
-            item->setFlag(QGraphicsItem::ItemIsMovable, true);
-            item->setFlag(QGraphicsItem::ItemIsSelectable, true);
-            m_scene->addItem(item);
+            addBumperItem(qobject_cast<Bumper*>(obj));
          }
          else
          {
@@ -44,6 +41,26 @@ namespace vpin::editor {
       connect(m_theme, &PlayfieldTheme::changed, this, [this]() {
          this->m_scene->update();
       });
+   }
+
+   void Playfield::addBumperItem(Bumper* bumper)
+   {
+      BumperItem* item = new BumperItem(m_theme, bumper);
+      item->setPos(bumper->getPosition());
+      item->setFlag(QGraphicsItem::ItemIsMovable, true);
+      item->setFlag(QGraphicsItem::ItemIsSelectable, true);
+
+      connect(item, &BumperItem::hasBeenMoved, [this, bumper](QPointF position) {
+         QString name = bumper->getName();
+         auto cmd = new SetElementPositionCommand(m_table, bumper->getName(), position);
+         m_table->getUndoStack()->push(cmd);
+      });
+
+      connect(bumper, &Bumper::changed, [item, bumper]() {
+         item->setPos(bumper->getPosition());
+      });
+
+      m_scene->addItem(item);
    }
 
    void Playfield::mousePressEvent(QMouseEvent* event)

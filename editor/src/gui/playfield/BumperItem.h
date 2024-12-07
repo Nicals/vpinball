@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QGraphicsItem>
+#include <QGraphicsObject>
 
 
 namespace vpin::editor {
@@ -10,8 +10,10 @@ namespace vpin::editor {
    class PlayfieldTheme;
 
    class BumperItem
-      : public QGraphicsItem
+      : public QGraphicsObject
    {
+      Q_OBJECT;
+
       public:
          BumperItem(PlayfieldTheme* theme, Bumper* bumper);
 
@@ -21,6 +23,9 @@ namespace vpin::editor {
       protected:
          void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
          QVariant itemChange(GraphicsItemChange change, const QVariant& value) override;
+
+      signals:
+         void hasBeenMoved(QPointF position);
 
       private:
          PlayfieldTheme* m_theme;

@@ -30,6 +30,9 @@ namespace vpin::editor {
          void openTableMetaDialog();
          void openSettingsDialog();
 
+         void undo();
+         void redo();
+
          void quitApplication();
 
       private:

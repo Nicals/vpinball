@@ -4,6 +4,8 @@
 #include <QList>
 #include <QUuid>
 
+class QUndoStack;
+
 
 namespace vpin::adapter {
    class Table;
@@ -24,6 +26,7 @@ namespace vpin::editor
          ~TableEdit();
 
          const QUuid& getId() const;
+         QUndoStack* getUndoStack();
          bool isDirty() const;
          void commit();
          const QString& getFilepath() const;
@@ -33,6 +36,7 @@ namespace vpin::editor
          void setName(const QString& name);
          QString getName() const;
 
+         PlayfieldElement* getElement(const QString& name);
          const QList<PlayfieldElement*>& getElements() const;
 
       signals:
@@ -41,6 +45,7 @@ namespace vpin::editor
          void nameChanged(QString);
 
       private:
+         QUndoStack* m_undoStack;
          void markDirty();
 
          QUuid m_id;
