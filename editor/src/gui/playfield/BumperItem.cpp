@@ -4,7 +4,6 @@
 
 #include <playfield/Bumper.h>
 #include <playfield/PlayfieldTheme.h>
-#include <qmath.h>
 
 #include "DragHandle.h"
 #include "BumperItem.h"
@@ -42,6 +41,16 @@ namespace vpin::editor {
       const float radius = m_bumper->getRadius();
       painter->setPen(m_theme->getRadiusPen());
       painter->drawEllipse(QRectF{-radius, -radius, radius * 2, radius * 2});
+   }
+
+   void BumperItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
+   {
+      QGraphicsItem::mouseReleaseEvent(event);
+      if (pos() == m_bumper->getPosition()) {
+         return;
+      }
+
+      m_bumper->setPosition(pos());
    }
 
    QVariant BumperItem::itemChange(GraphicsItemChange change, const QVariant& value)

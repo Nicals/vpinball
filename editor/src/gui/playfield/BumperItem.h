@@ -19,6 +19,7 @@ namespace vpin::editor {
          void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
       protected:
+         void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
          QVariant itemChange(GraphicsItemChange change, const QVariant& value) override;
 
       private:
