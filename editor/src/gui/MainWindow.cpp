@@ -49,34 +49,6 @@ namespace vpin::editor {
       connect(menu, &MenuBar::editTableMetaRequested, this, &MainWindow::openTableMetaDialog);
       connect(menu, &MenuBar::editAppSettingsRequested, this, &MainWindow::openSettingsDialog);
       connect(menu, &MenuBar::showUndoStackRequested, this, &MainWindow::showUndoDock);
-
-      // Temporary, not sure I want to manage it this way.
-      // Update current undo view according to active table
-      connect(m_tabs, &QTabWidget::currentChanged, [this](int index) {
-         if (index == -1) {
-            m_editor->getUndoGroup()->setActiveStack(nullptr);
-            return;
-         }
-
-         m_editor->getUndoGroup()->setActiveStack(getActiveTable()->getUndoStack());
-      });
-   }
-
-   TableEdit* MainWindow::getActiveTable()
-   {
-      QWidget* currentTab = m_tabs->currentWidget();
-      if (currentTab == nullptr) {
-         qCritical("Cannot get active table: no current tab.");
-         return nullptr;
-      }
-
-      QVariant tableId = currentTab->property("tableId");
-      if (!tableId.isValid()) {
-         qCritical("Cannot get active table: widget has no tableId property.");
-         return nullptr;
-      }
-
-      return m_editor->getTable(tableId.value<QUuid>());
    }
 
    void MainWindow::loadTable()
@@ -100,7 +72,7 @@ namespace vpin::editor {
 
    bool MainWindow::saveCurrentTable()
    {
-      TableEdit* table = getActiveTable();
+      TableEdit* table = m_editor->getActiveTable();
       if (table == nullptr) {
          return false;
       }
@@ -121,7 +93,7 @@ namespace vpin::editor {
 
    bool MainWindow::saveCurrentTableInNewFile()
    {
-      TableEdit* table = getActiveTable();
+      TableEdit* table = m_editor->getActiveTable();
       if (table == nullptr) {
          return false;
       }
@@ -147,7 +119,7 @@ namespace vpin::editor {
 
    void MainWindow::closeActiveTable()
    {
-      TableEdit* table = getActiveTable();
+      TableEdit* table = m_editor->getActiveTable();
       if (table == nullptr) {
          return;
       }
@@ -182,7 +154,7 @@ namespace vpin::editor {
 
    void MainWindow::openTableMetaDialog()
    {
-      TableEdit* table = getActiveTable();
+      TableEdit* table = m_editor->getActiveTable();
       if (table == nullptr) {
          return;
       }

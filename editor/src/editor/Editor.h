@@ -33,19 +33,22 @@ namespace vpin::editor {
          unsigned int getTableCount() const;
          bool hasTableLoaded() const;
          TableEdit* getTable(const QUuid& id);
+         TableEdit* getActiveTable() const;
+         void setActiveTable(const QUuid& id);
          bool hasPendingChanges() const;
 
       signals:
          void tableClosed();
-         void tableLoaded(const QUuid&);
+         void activeTableChanged(const QUuid&);
          void tableCountChanged(int);
 
       private:
          vpin::adapter::Adapter* m_adapter;
 
-         QMap<QUuid, TableEdit*> m_tables;
          QUndoGroup* m_undoGroup;
          PlayfieldTheme* m_theme;
-         bool m_loaded = false;
+
+         QMap<QUuid, TableEdit*> m_tables;
+         QUuid m_activeTable;
    };
 }

@@ -52,8 +52,8 @@ namespace vpin::editor {
          << "has been loaded and registered as"
          << table->getId().toString(QUuid::WithoutBraces);
 
-      emit tableLoaded(table->getId());
       emit tableCountChanged(m_tables.count());
+      setActiveTable(table->getId());
 
       return true;
    }
@@ -85,6 +85,32 @@ namespace vpin::editor {
       emit tableClosed();
       emit tableCountChanged(m_tables.count());
       qCritical() << "Closing table is not implemented on adapter side.";
+   }
+
+   TableEdit* Editor::getActiveTable() const
+   {
+      if (m_activeTable.isNull()) {
+         qCritical() << "Cannot get active table: no active table yet.";
+         return nullptr;
+      }
+
+      if (!m_tables.contains(m_activeTable)) {
+         qCritical() << "Cannot get active table: table" << m_activeTable << "is not registered.";
+         return nullptr;
+      }
+
+      return m_tables.value(m_activeTable);
+   }
+
+   void Editor::setActiveTable(const QUuid& id)
+   {
+      if (!m_tables.contains(id)) {
+         qCritical() << "Cannot set active table: table" << m_activeTable << "is not registred.";
+      }
+
+      m_activeTable = id;
+      m_undoGroup->setActiveStack(m_tables.value(id)->getUndoStack());
+      emit activeTableChanged(id);
    }
 
    unsigned int Editor::getTableCount() const

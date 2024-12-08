@@ -18,9 +18,6 @@ namespace vpin::editor {
       public:
          explicit MainWindow(Editor* editor, QWidget* parent = nullptr);
 
-      private:
-         TableEdit* getActiveTable();
-
       public slots:
          void loadTable();
          bool saveCurrentTable();
