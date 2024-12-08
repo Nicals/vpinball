@@ -1,7 +1,6 @@
 #include <QApplication>
 #include <QCoreApplication>
 #include <QFileDialog>
-#include <QMenuBar>
 #include <QMessageBox>
 #include <QStatusBar>
 #include <QUndoStack>
@@ -12,6 +11,7 @@
 #include "dialogs/SettingsDialog.h"
 #include "dialogs/TableMetaDialog.h"
 #include "MainWindow.h"
+#include "MenuBar.h"
 #include "TableTabs.h"
 
 namespace vpin::editor {
@@ -21,91 +21,24 @@ namespace vpin::editor {
         QMainWindow(parent)
    {
       m_editor->setParent(this);
-      buildFileMenuBar();
-      buildEditMenuBar();
 
+      // Window content
       m_tabs = new TableTabs{m_editor};
       setCentralWidget(m_tabs);
-   }
 
-   void MainWindow::buildFileMenuBar()
-   {
-      QAction* openTableAction = new QAction(tr("&Open table"));
-      openTableAction->setShortcut(Qt::CTRL | Qt::Key_O);
-      connect(openTableAction, &QAction::triggered, this, &MainWindow::loadTable);
+      // Main menu bar
+      MenuBar* menu = new MenuBar{m_editor, this};
+      setMenuBar(menu);
 
-      QAction* saveAction = new QAction(tr("Save"));
-      saveAction->setShortcut(Qt::CTRL | Qt::Key_S);
-      saveAction->setDisabled(!m_editor->hasTableLoaded());
-      connect(m_editor, &Editor::tableCountChanged, saveAction, [saveAction](int tableCount) {
-         saveAction->setEnabled(tableCount > 0);
-      });
-      connect(saveAction, &QAction::triggered, this, &MainWindow::saveCurrentTable);
-
-      QAction* saveAsAction = new QAction(tr("Save as"));
-      saveAsAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_S);
-      saveAsAction->setDisabled(!m_editor->hasTableLoaded());
-      connect(m_editor, &Editor::tableCountChanged, saveAsAction, [saveAsAction](int tableCount) {
-         saveAsAction->setEnabled(tableCount > 0);
-      });
-      connect(saveAsAction, &QAction::triggered, this, &MainWindow::saveCurrentTableInNewFile);
-
-      QAction* closeAction = new QAction(tr("Close table"));
-      closeAction->setShortcut(Qt::CTRL | Qt::Key_W);
-      closeAction->setDisabled(!m_editor->hasTableLoaded());
-      connect(m_editor, &Editor::tableCountChanged, closeAction, [closeAction](int tableCount) {
-         closeAction->setEnabled(tableCount > 0);
-      });
-      connect(closeAction, &QAction::triggered, this, &MainWindow::closeActiveTable);
-
-      QAction* quitAction = new QAction(tr("Quit"));
-      quitAction->setShortcut(Qt::CTRL | Qt::Key_Q);
-      connect(quitAction, &QAction::triggered, this, &MainWindow::quitApplication, Qt::QueuedConnection);
-
-      QMenu* fileMenu = menuBar()->addMenu(tr("&File"));
-      fileMenu->addAction(openTableAction);
-      fileMenu->addAction(saveAction);
-      fileMenu->addAction(saveAsAction);
-      fileMenu->addAction(closeAction);
-      fileMenu->addSeparator();
-      fileMenu->addAction(quitAction);
-   }
-
-   void MainWindow::buildEditMenuBar()
-   {
-      QAction* undoAction = new QAction(tr("Undo"));
-      undoAction->setShortcut(Qt::CTRL | Qt::Key_Z);
-      undoAction->setDisabled(!m_editor->hasTableLoaded());
-      connect(m_editor, &Editor::tableCountChanged, undoAction, [undoAction](int tableCount) {
-         undoAction->setEnabled(tableCount > 0);
-      });
-      connect(undoAction, &QAction::triggered, this, &MainWindow::undo);
-
-      QAction* redoAction = new QAction(tr("Redo"));
-      redoAction->setShortcut(Qt::CTRL | Qt::Key_Y);
-      redoAction->setDisabled(!m_editor->hasTableLoaded());
-      connect(m_editor, &Editor::tableCountChanged, redoAction, [redoAction](int tableCount) {
-         redoAction->setEnabled(tableCount > 0);
-      });
-      connect(redoAction, &QAction::triggered, this, &MainWindow::redo);
-
-      QAction* tableMetaAction = new QAction(tr("Table meta"));
-      tableMetaAction->setDisabled(!m_editor->hasTableLoaded());
-      connect(m_editor, &Editor::tableCountChanged, tableMetaAction, [tableMetaAction](int tableCount) {
-         tableMetaAction->setEnabled(tableCount > 0);
-      });
-      connect(tableMetaAction, &QAction::triggered, this, &MainWindow::openTableMetaDialog);
-
-      QAction* settingsAction = new QAction(tr("Settings"));
-      connect(settingsAction, &QAction::triggered, this, &MainWindow::openSettingsDialog);
-
-      QMenu* menu = menuBar()->addMenu(tr("&Edit"));
-      menu->addAction(undoAction);
-      menu->addAction(redoAction);
-      menu->addSeparator();
-      menu->addAction(tableMetaAction);
-      menu->addSeparator();
-      menu->addAction(settingsAction);
+      connect(menu, &MenuBar::openTableRequested, this, &MainWindow::loadTable);
+      connect(menu, &MenuBar::saveTableRequested, this, &MainWindow::saveCurrentTable);
+      connect(menu, &MenuBar::saveTableAsRequested, this, &MainWindow::saveCurrentTableInNewFile);
+      connect(menu, &MenuBar::closeTableRequested, this, &MainWindow::closeActiveTable);
+      connect(menu, &MenuBar::quitApplicationRequested, this, &MainWindow::quitApplication, Qt::QueuedConnection);
+      connect(menu, &MenuBar::editTableMetaRequested, this, &MainWindow::openTableMetaDialog);
+      connect(menu, &MenuBar::editAppSettingsRequested, this, &MainWindow::openSettingsDialog);
+      connect(menu, &MenuBar::undoRequested, this, &MainWindow::undo);
+      connect(menu, &MenuBar::redoRequested, this, &MainWindow::redo);
    }
 
    TableEdit* MainWindow::getActiveTable()
@@ -256,6 +189,10 @@ namespace vpin::editor {
          return;
       }
 
+      if (!table->getUndoStack()->canUndo()) {
+         statusBar()->showMessage(tr("Nothing to undo."));
+      }
+
       table->getUndoStack()->undo();
    }
 
@@ -264,6 +201,10 @@ namespace vpin::editor {
       TableEdit* table = getActiveTable();
       if (table == nullptr) {
          return;
+      }
+
+      if (!table->getUndoStack()->canRedo()) {
+         statusBar()->showMessage(tr("Nothing to redo."));
       }
 
       table->getUndoStack()->redo();

@@ -1,5 +1,6 @@
 qt_add_library(gui STATIC
   MainWindow.cpp
+  MenuBar.cpp
   TableTabs.cpp
 )
 add_subdirectory(dialogs)

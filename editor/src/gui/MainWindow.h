@@ -17,8 +17,6 @@ namespace vpin::editor {
          explicit MainWindow(Editor* editor, QWidget* parent = nullptr);
 
       private:
-         void buildFileMenuBar();
-         void buildEditMenuBar();
          TableEdit* getActiveTable();
 
       public slots:
