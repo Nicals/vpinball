@@ -3,7 +3,8 @@
 #include <QMap>
 #include <QUuid>
 #include <QObject>
-#include <quuid.h>
+
+class QUndoGroup;
 
 namespace vpin::adapter {
    class Adapter;
@@ -24,6 +25,7 @@ namespace vpin::editor {
          ~Editor();
 
          PlayfieldTheme* getPlayfieldTheme();
+         QUndoGroup* getUndoGroup();
 
          bool loadTable(const QString& filepath);
          bool saveTable(const QUuid& tableId, const QString& filepath);
@@ -42,6 +44,7 @@ namespace vpin::editor {
          vpin::adapter::Adapter* m_adapter;
 
          QMap<QUuid, TableEdit*> m_tables;
+         QUndoGroup* m_undoGroup;
          PlayfieldTheme* m_theme;
          bool m_loaded = false;
    };

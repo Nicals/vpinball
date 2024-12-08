@@ -46,6 +46,7 @@ namespace vpin::editor {
          return;
       }
 
+      m_undoStack->setClean();
       m_dirty = false;
       emit dirtyStateChanged(false);
    }

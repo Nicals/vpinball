@@ -1,3 +1,5 @@
+#include <QUndoGroup>
+
 #include <Editor.h>
 
 #include "MenuBar.h"
@@ -66,15 +68,11 @@ namespace vpin::editor {
       QAction* settingsAction = new QAction(tr("Settings"));
       connect(settingsAction, &QAction::triggered, [this]() { emit editAppSettingsRequested(); });
 
-      QAction* undoAction = new QAction(tr("Undo"));
+      QAction* undoAction = editor->getUndoGroup()->createUndoAction(this);
       undoAction->setShortcut(Qt::CTRL | Qt::Key_Z);
-      actionNeedsTable(undoAction, editor);
-      connect(undoAction, &QAction::triggered, [this] { emit undoRequested(); });
 
-      QAction* redoAction = new QAction(tr("Redo"));
+      QAction* redoAction = editor->getUndoGroup()->createRedoAction(this);
       redoAction->setShortcut(Qt::CTRL | Qt::Key_Y);
-      actionNeedsTable(redoAction, editor);
-      connect(redoAction, &QAction::triggered, [this] { emit redoRequested(); });
 
       QMenu* menu = new QMenu(tr("&Edit"));
       menu->addAction(undoAction);

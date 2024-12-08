@@ -35,8 +35,6 @@ namespace vpin::editor {
 
          void editAppSettingsRequested();
 
-         void undoRequested();
-         void redoRequested();
          void editTableMetaRequested();
 
          void showUndoStackRequested(bool show);

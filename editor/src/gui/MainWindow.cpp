@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QStatusBar>
 #include <QUndoStack>
+#include <QUndoGroup>
 #include <QUndoView>
 
 #include <Editor.h>
@@ -36,7 +37,8 @@ namespace vpin::editor {
       setMenuBar(menu);
 
       // Dock windows
-      createUndoDock();
+      m_undoDock = new QDockWidget{tr("Undo stack")};
+      m_undoDock->setWidget(new QUndoView{m_editor->getUndoGroup()});
 
       // Main Menu
       connect(menu, &MenuBar::openTableRequested, this, &MainWindow::loadTable);
@@ -46,9 +48,18 @@ namespace vpin::editor {
       connect(menu, &MenuBar::quitApplicationRequested, this, &MainWindow::quitApplication, Qt::QueuedConnection);
       connect(menu, &MenuBar::editTableMetaRequested, this, &MainWindow::openTableMetaDialog);
       connect(menu, &MenuBar::editAppSettingsRequested, this, &MainWindow::openSettingsDialog);
-      connect(menu, &MenuBar::undoRequested, this, &MainWindow::undo);
-      connect(menu, &MenuBar::redoRequested, this, &MainWindow::redo);
       connect(menu, &MenuBar::showUndoStackRequested, this, &MainWindow::showUndoDock);
+
+      // Temporary, not sure I want to manage it this way.
+      // Update current undo view according to active table
+      connect(m_tabs, &QTabWidget::currentChanged, [this](int index) {
+         if (index == -1) {
+            m_editor->getUndoGroup()->setActiveStack(nullptr);
+            return;
+         }
+
+         m_editor->getUndoGroup()->setActiveStack(getActiveTable()->getUndoStack());
+      });
    }
 
    TableEdit* MainWindow::getActiveTable()
@@ -66,23 +77,6 @@ namespace vpin::editor {
       }
 
       return m_editor->getTable(tableId.value<QUuid>());
-   }
-
-   void MainWindow::createUndoDock()
-   {
-      m_undoView = new QUndoView;
-      // Update current undo view according to active table
-      connect(m_tabs, &QTabWidget::currentChanged, [this](int index) {
-         if (index == -1) {
-            m_undoView->setStack(nullptr);
-            return;
-         }
-
-         m_undoView->setStack(getActiveTable()->getUndoStack());
-      });
-
-      m_undoDock = new QDockWidget;
-      m_undoDock->setWidget(m_undoView);
    }
 
    void MainWindow::loadTable()
@@ -207,34 +201,6 @@ namespace vpin::editor {
       settingsDialog.exec();
 
       statusBar()->showMessage(tr("Settings have been saved."), tempMessageTimeout);
-   }
-
-   void MainWindow::undo()
-   {
-      TableEdit* table = getActiveTable();
-      if (table == nullptr) {
-         return;
-      }
-
-      if (!table->getUndoStack()->canUndo()) {
-         statusBar()->showMessage(tr("Nothing to undo."), tempMessageTimeout);
-      }
-
-      table->getUndoStack()->undo();
-   }
-
-   void MainWindow::redo()
-   {
-      TableEdit* table = getActiveTable();
-      if (table == nullptr) {
-         return;
-      }
-
-      if (!table->getUndoStack()->canRedo()) {
-         statusBar()->showMessage(tr("Nothing to redo."), tempMessageTimeout);
-      }
-
-      table->getUndoStack()->redo();
    }
 
    void MainWindow::showUndoDock(bool show)

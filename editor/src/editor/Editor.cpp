@@ -1,8 +1,8 @@
 #include <QDebug>
+#include <QUndoGroup>
 
 #include <adapter/Adapter.h>
 #include <adapter/Table.h>
-#include <quuid.h>
 
 #include "Editor.h"
 #include "TableEdit.h"
@@ -16,6 +16,7 @@ namespace vpin::editor {
         QObject()
    {
       m_theme = new PlayfieldTheme{this};
+      m_undoGroup = new QUndoGroup;
    }
 
    Editor::~Editor()
@@ -31,6 +32,11 @@ namespace vpin::editor {
       return m_theme;
    }
 
+   QUndoGroup* Editor::getUndoGroup()
+   {
+      return m_undoGroup;
+   }
+
    bool Editor::loadTable(const QString& filepath)
    {
       TableEdit* table = new TableEdit(
@@ -38,6 +44,7 @@ namespace vpin::editor {
          m_adapter->loadTable(filepath.toStdString()),
          this
       );
+      m_undoGroup->addStack(table->getUndoStack());
       table->setFilepath(filepath);
       m_tables.insert(table->getId(), table);
 
@@ -71,6 +78,7 @@ namespace vpin::editor {
    {
       TableEdit* table = getTable(tableId);
       qInfo() << "Closing table" << tableId << ":" << table->getName();
+      m_undoGroup->removeStack(table->getUndoStack());
       table->prepareForClosing();
 
       m_tables.take(tableId);

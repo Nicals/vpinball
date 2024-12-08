@@ -21,8 +21,6 @@ namespace vpin::editor {
       private:
          TableEdit* getActiveTable();
 
-         void createUndoDock();
-
       public slots:
          void loadTable();
          bool saveCurrentTable();
@@ -31,9 +29,6 @@ namespace vpin::editor {
 
          void openTableMetaDialog();
          void openSettingsDialog();
-
-         void undo();
-         void redo();
 
          void showUndoDock(bool show);
 
@@ -45,7 +40,6 @@ namespace vpin::editor {
 
          // Dock widgets
          QDockWidget* m_undoDock;
-         QUndoView* m_undoView;
 
          // Settings
          static const int tempMessageTimeout = 5e3;
