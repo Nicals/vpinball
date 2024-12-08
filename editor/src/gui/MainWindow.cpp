@@ -22,6 +22,9 @@ namespace vpin::editor {
    {
       m_editor->setParent(this);
 
+      // Ensures the status bar is initially visible
+      setStatusBar(new QStatusBar);
+
       // Window content
       m_tabs = new TableTabs{m_editor};
       setCentralWidget(m_tabs);
