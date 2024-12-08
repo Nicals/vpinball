@@ -55,13 +55,13 @@ namespace vpin::editor {
    {
       QWidget* currentTab = m_tabs->currentWidget();
       if (currentTab == nullptr) {
-         qCritical("Cannot open table meta dialog: no curent table.");
+         qCritical("Cannot get active table: no current tab.");
          return nullptr;
       }
 
       QVariant tableId = currentTab->property("tableId");
       if (!tableId.isValid()) {
-         qCritical("Cannot open table meta dialog: current widget has no tableId property.");
+         qCritical("Cannot get active table: widget has no tableId property.");
          return nullptr;
       }
 

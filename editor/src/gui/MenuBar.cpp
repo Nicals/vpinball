@@ -37,10 +37,10 @@ namespace vpin::editor {
       actionNeedsTable(saveAsAction, editor);
       connect(saveAsAction, &QAction::triggered, [this]() { emit saveTableAsRequested(); });
 
-      QAction* closeTableAction = new QAction(tr("Save as"));
-      closeTableAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_S);
+      QAction* closeTableAction = new QAction(tr("Close"));
+      closeTableAction->setShortcut(Qt::CTRL | Qt::Key_W);
       actionNeedsTable(closeTableAction, editor);
-      connect(closeTableAction, &QAction::triggered, [this]() { emit saveTableAsRequested(); });
+      connect(closeTableAction, &QAction::triggered, [this]() { emit closeTableRequested(); });
 
       QAction* quitAction = new QAction(tr("&Quit"));
       quitAction->setShortcut(Qt::CTRL | Qt::Key_Q);
