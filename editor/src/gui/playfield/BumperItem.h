@@ -2,6 +2,8 @@
 
 #include <QGraphicsObject>
 
+#include <Angle.h>
+
 
 namespace vpin::editor {
 
@@ -17,7 +19,7 @@ namespace vpin::editor {
          BumperItem(PlayfieldTheme* theme);
 
          void setRadius(float radius);
-         void setOrientation(float degrees);
+         void setOrientation(const Angle& degrees);
 
          QRectF boundingRect() const override;
          void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
@@ -38,8 +40,7 @@ namespace vpin::editor {
          DragHandle* m_radiusHandle;
 
          float m_radius = 0;
-         // Stored in radians
-         float m_orientation = 0;
+         Angle m_orientation;
    };
 
 }

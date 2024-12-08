@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Angle.h"
 #include "PlayfieldElement.h"
 
 
@@ -25,8 +26,8 @@ namespace vpin {
          void setPosition(QPointF position) override;
          float getRadius() const;
          void setRadius(float radius);
-         float getOrientation() const;
-         void setOrientation(float degrees);
+         Angle getOrientation() const;
+         void setOrientation(const Angle& orientation);
 
       private:
          adapter::Bumper* m_bumper;

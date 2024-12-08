@@ -25,17 +25,17 @@ namespace vpin::editor {
       updateRadiusHandle();
    }
 
-   void BumperItem::setOrientation(float degrees)
+   void BumperItem::setOrientation(const Angle& orientation)
    {
-      m_orientation = qDegreesToRadians(degrees);
+      m_orientation = orientation;
       updateRadiusHandle();
    }
 
    void BumperItem::updateRadiusHandle()
    {
       m_radiusHandle->setPos(
-         m_radius * qCos(qDegreesToRadians(m_orientation)),
-         m_radius * qSin(qDegreesToRadians(m_orientation))
+         m_radius * qCos(m_orientation.radians()),
+         m_radius * qSin(m_orientation.radians())
       );
    }
 

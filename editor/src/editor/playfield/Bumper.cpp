@@ -56,17 +56,17 @@ namespace vpin::editor {
       emit changed();
    }
 
-   float Bumper::getOrientation() const
+   Angle Bumper::getOrientation() const
    {
-      return m_bumper->getOrientation();
+      return Angle::fromDegrees(m_bumper->getOrientation());
    }
 
-   void Bumper::setOrientation(float degrees)
+   void Bumper::setOrientation(const Angle& orientation)
    {
-      if (qFuzzyCompare(degrees, getOrientation())) {
+      if (getOrientation() == orientation) {
          return;
       }
-      m_bumper->setOrientation(degrees);
+      m_bumper->setOrientation(orientation.degrees());
       emit changed();
    }
 

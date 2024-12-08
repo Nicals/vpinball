@@ -1,4 +1,5 @@
 qt_add_library(editor STATIC
+  Angle.cpp
   Editor.cpp
   TableEdit.cpp
 )
