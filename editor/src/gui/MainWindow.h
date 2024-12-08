@@ -36,6 +36,8 @@ namespace vpin::editor {
       private:
          Editor* m_editor;
          QTabWidget* m_tabs;
+
+         static const int tempMessageTimeout = 5e3;
    };
 
 }

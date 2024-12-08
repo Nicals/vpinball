@@ -72,7 +72,7 @@ namespace vpin::editor {
       }
 
       if (m_editor->loadTable(filepath)) {
-         statusBar()->showMessage(tr("Loaded table: %1").arg(filepath));
+         statusBar()->showMessage(tr("Loaded table: %1").arg(filepath), tempMessageTimeout);
       }
       else
       {
@@ -96,7 +96,7 @@ namespace vpin::editor {
          return false;
       }
 
-      statusBar()->showMessage(tr("Table saved as %1").arg(table->getFilepath()));
+      statusBar()->showMessage(tr("Table saved as %1").arg(table->getFilepath()), tempMessageTimeout);
 
       return true;
    }
@@ -122,7 +122,7 @@ namespace vpin::editor {
          return false;
       }
 
-      statusBar()->showMessage(tr("Table saved as %1").arg(table->getFilepath()));
+      statusBar()->showMessage(tr("Table saved as %1").arg(table->getFilepath()), tempMessageTimeout);
 
       return true;
    }
@@ -158,7 +158,7 @@ namespace vpin::editor {
 
       qDebug() << "Table" << table->getName() << "closed";
 
-      statusBar()->showMessage(tr("Table %1 has been closed.").arg(table->getName()));
+      statusBar()->showMessage(tr("Table %1 has been closed.").arg(table->getName()), tempMessageTimeout);
       m_editor->closeTable(table->getId());
    }
 
@@ -182,7 +182,7 @@ namespace vpin::editor {
 
       settingsDialog.exec();
 
-      statusBar()->showMessage(tr("Settings have been saved."));
+      statusBar()->showMessage(tr("Settings have been saved."), tempMessageTimeout);
    }
 
    void MainWindow::undo()
@@ -193,7 +193,7 @@ namespace vpin::editor {
       }
 
       if (!table->getUndoStack()->canUndo()) {
-         statusBar()->showMessage(tr("Nothing to undo."));
+         statusBar()->showMessage(tr("Nothing to undo."), tempMessageTimeout);
       }
 
       table->getUndoStack()->undo();
@@ -207,7 +207,7 @@ namespace vpin::editor {
       }
 
       if (!table->getUndoStack()->canRedo()) {
-         statusBar()->showMessage(tr("Nothing to redo."));
+         statusBar()->showMessage(tr("Nothing to redo."), tempMessageTimeout);
       }
 
       table->getUndoStack()->redo();
