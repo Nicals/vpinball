@@ -8,8 +8,9 @@ namespace vpin::editor {
    MenuBar::MenuBar(Editor* editor, QWidget* parent)
       : QMenuBar{parent}
    {
-      buildFileMenu(editor);
-      buildEditMenu(editor);
+      addMenu(buildFileMenu(editor));
+      addMenu(buildEditMenu(editor));
+      addMenu(buildViewMenu(editor));
    }
 
    void MenuBar::actionNeedsTable(QAction* action, Editor* editor) const
@@ -20,7 +21,7 @@ namespace vpin::editor {
       });
    }
 
-   void MenuBar::buildFileMenu(Editor* editor)
+   QMenu* MenuBar::buildFileMenu(Editor* editor)
    {
       QAction* openTableAction = new QAction(tr("&Open table"));
       openTableAction->setShortcut(Qt::CTRL | Qt::Key_O);
@@ -45,16 +46,18 @@ namespace vpin::editor {
       quitAction->setShortcut(Qt::CTRL | Qt::Key_Q);
       connect(quitAction, &QAction::triggered, [this]() { emit quitApplicationRequested(); });
 
-      QMenu* menu = addMenu(tr("&File"));
+      QMenu* menu = new QMenu(tr("&File"));
       menu->addAction(openTableAction);
       menu->addAction(saveAction);
       menu->addAction(saveAsAction);
       menu->addAction(closeTableAction);
       menu->addSeparator();
       menu->addAction(quitAction);
+
+      return menu;
    }
 
-   void MenuBar::buildEditMenu(Editor* editor)
+   QMenu* MenuBar::buildEditMenu(Editor* editor)
    {
       QAction* tableMetaAction = new QAction(tr("Table meta"));
       actionNeedsTable(tableMetaAction, editor);
@@ -73,13 +76,28 @@ namespace vpin::editor {
       actionNeedsTable(redoAction, editor);
       connect(redoAction, &QAction::triggered, [this] { emit redoRequested(); });
 
-      QMenu* menu = addMenu(tr("&Edit"));
+      QMenu* menu = new QMenu(tr("&Edit"));
       menu->addAction(undoAction);
       menu->addAction(redoAction);
       menu->addSeparator();
       menu->addAction(tableMetaAction);
       menu->addSeparator();
       menu->addAction(settingsAction);
+
+      return menu;
+   }
+
+   QMenu* MenuBar::buildViewMenu(Editor* editor)
+   {
+      QAction* showUndoStackAction = new QAction(tr("Undo stack"));
+      actionNeedsTable(showUndoStackAction, editor);
+      showUndoStackAction->setCheckable(true);
+      connect(showUndoStackAction, &QAction::triggered, [this](bool checked) { emit showUndoStackRequested(checked); });
+
+      QMenu* menu = new QMenu(tr("&View"));
+      menu->addAction(showUndoStackAction);
+
+      return menu;
    }
 
 }

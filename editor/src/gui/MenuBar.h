@@ -23,8 +23,9 @@ namespace vpin::editor {
       private:
          void actionNeedsTable(QAction* action, Editor* editor) const;
 
-         void buildFileMenu(Editor* editor);
-         void buildEditMenu(Editor* editor);
+         QMenu* buildFileMenu(Editor* editor);
+         QMenu* buildEditMenu(Editor* editor);
+         QMenu* buildViewMenu(Editor* editor);
 
       signals:
          void openTableRequested();
@@ -37,6 +38,8 @@ namespace vpin::editor {
          void undoRequested();
          void redoRequested();
          void editTableMetaRequested();
+
+         void showUndoStackRequested(bool show);
 
          void quitApplicationRequested();
    };

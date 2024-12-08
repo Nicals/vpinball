@@ -1,9 +1,11 @@
 #include <QApplication>
 #include <QCoreApplication>
+#include <QDockWidget>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QStatusBar>
 #include <QUndoStack>
+#include <QUndoView>
 
 #include <Editor.h>
 #include <TableEdit.h>
@@ -33,6 +35,10 @@ namespace vpin::editor {
       MenuBar* menu = new MenuBar{m_editor, this};
       setMenuBar(menu);
 
+      // Dock windows
+      createUndoDock();
+
+      // Main Menu
       connect(menu, &MenuBar::openTableRequested, this, &MainWindow::loadTable);
       connect(menu, &MenuBar::saveTableRequested, this, &MainWindow::saveCurrentTable);
       connect(menu, &MenuBar::saveTableAsRequested, this, &MainWindow::saveCurrentTableInNewFile);
@@ -42,6 +48,7 @@ namespace vpin::editor {
       connect(menu, &MenuBar::editAppSettingsRequested, this, &MainWindow::openSettingsDialog);
       connect(menu, &MenuBar::undoRequested, this, &MainWindow::undo);
       connect(menu, &MenuBar::redoRequested, this, &MainWindow::redo);
+      connect(menu, &MenuBar::showUndoStackRequested, this, &MainWindow::showUndoDock);
    }
 
    TableEdit* MainWindow::getActiveTable()
@@ -59,6 +66,23 @@ namespace vpin::editor {
       }
 
       return m_editor->getTable(tableId.value<QUuid>());
+   }
+
+   void MainWindow::createUndoDock()
+   {
+      m_undoView = new QUndoView;
+      // Update current undo view according to active table
+      connect(m_tabs, &QTabWidget::currentChanged, [this](int index) {
+         if (index == -1) {
+            m_undoView->setStack(nullptr);
+            return;
+         }
+
+         m_undoView->setStack(getActiveTable()->getUndoStack());
+      });
+
+      m_undoDock = new QDockWidget;
+      m_undoDock->setWidget(m_undoView);
    }
 
    void MainWindow::loadTable()
@@ -211,6 +235,15 @@ namespace vpin::editor {
       }
 
       table->getUndoStack()->redo();
+   }
+
+   void MainWindow::showUndoDock(bool show)
+   {
+      if (show) {
+         addDockWidget(Qt::LeftDockWidgetArea, m_undoDock);
+      } else {
+         removeDockWidget(m_undoDock);
+      }
    }
 
    void MainWindow::quitApplication()

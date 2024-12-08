@@ -2,6 +2,8 @@
 
 #include <QMainWindow>
 
+class QDockWidget;
+class QUndoView;
 
 namespace vpin::editor {
 
@@ -19,6 +21,8 @@ namespace vpin::editor {
       private:
          TableEdit* getActiveTable();
 
+         void createUndoDock();
+
       public slots:
          void loadTable();
          bool saveCurrentTable();
@@ -31,12 +35,19 @@ namespace vpin::editor {
          void undo();
          void redo();
 
+         void showUndoDock(bool show);
+
          void quitApplication();
 
       private:
          Editor* m_editor;
          QTabWidget* m_tabs;
 
+         // Dock widgets
+         QDockWidget* m_undoDock;
+         QUndoView* m_undoView;
+
+         // Settings
          static const int tempMessageTimeout = 5e3;
    };
 
