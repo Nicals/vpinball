@@ -45,19 +45,24 @@ namespace vpin::editor {
 
    void Playfield::addBumperItem(Bumper* bumper)
    {
-      BumperItem* item = new BumperItem(m_theme, bumper);
+      BumperItem* item = new BumperItem(m_theme);
       item->setPos(bumper->getPosition());
+      item->setRadius(bumper->getRadius());
+      item->setOrientation(bumper->getOrientation());
+
       item->setFlag(QGraphicsItem::ItemIsMovable, true);
       item->setFlag(QGraphicsItem::ItemIsSelectable, true);
 
       connect(item, &BumperItem::hasBeenMoved, [this, bumper](QPointF position) {
-         QString name = bumper->getName();
          auto cmd = new SetElementPositionCommand(m_table, bumper->getName(), position);
          m_table->getUndoStack()->push(cmd);
       });
 
       connect(bumper, &Bumper::changed, [item, bumper]() {
          item->setPos(bumper->getPosition());
+         item->setRadius(bumper->getRadius());
+         item->setOrientation(bumper->getOrientation());
+         item->update();
       });
 
       m_scene->addItem(item);

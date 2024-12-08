@@ -11,23 +11,37 @@
 
 namespace vpin::editor {
 
-   BumperItem::BumperItem(PlayfieldTheme* theme, Bumper* bumper)
-      : m_theme{theme},
-        m_bumper{bumper}
+   BumperItem::BumperItem(PlayfieldTheme* theme)
+      : m_theme{theme}
    {
       m_radiusHandle = new DragHandle{m_theme, this};
-      m_radiusHandle->setPos(
-         bumper->getRadius() * qCos(qDegreesToRadians(bumper->getOrientation())),
-         bumper->getRadius() * qSin(qDegreesToRadians(bumper->getOrientation()))
-      );
 
       setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
    }
 
+   void BumperItem::setRadius(float radius)
+   {
+      m_radius = radius;
+      updateRadiusHandle();
+   }
+
+   void BumperItem::setOrientation(float degrees)
+   {
+      m_orientation = qDegreesToRadians(degrees);
+      updateRadiusHandle();
+   }
+
+   void BumperItem::updateRadiusHandle()
+   {
+      m_radiusHandle->setPos(
+         m_radius * qCos(qDegreesToRadians(m_orientation)),
+         m_radius * qSin(qDegreesToRadians(m_orientation))
+      );
+   }
+
    QRectF BumperItem::boundingRect() const
    {
-      const float radius = m_bumper->getRadius();
-      return QRectF{-radius, -radius, radius * 2, radius * 2};
+      return QRectF{-m_radius, -m_radius, m_radius * 2, m_radius * 2};
    }
 
    void BumperItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
@@ -38,17 +52,13 @@ namespace vpin::editor {
       painter->drawEllipse(QRectF{-10.0, -10.0, 20.0, 20.0});
 
       // Paint radius
-      const float radius = m_bumper->getRadius();
       painter->setPen(m_theme->getRadiusPen());
-      painter->drawEllipse(QRectF{-radius, -radius, radius * 2, radius * 2});
+      painter->drawEllipse(QRectF{-m_radius, -m_radius, m_radius * 2, m_radius * 2});
    }
 
    void BumperItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
    {
       QGraphicsItem::mouseReleaseEvent(event);
-      if (pos() == m_bumper->getPosition()) {
-         return;
-      }
 
       emit hasBeenMoved(pos());
    }

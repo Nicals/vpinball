@@ -5,7 +5,6 @@
 
 namespace vpin::editor {
 
-   class Bumper;
    class DragHandle;
    class PlayfieldTheme;
 
@@ -15,7 +14,10 @@ namespace vpin::editor {
       Q_OBJECT;
 
       public:
-         BumperItem(PlayfieldTheme* theme, Bumper* bumper);
+         BumperItem(PlayfieldTheme* theme);
+
+         void setRadius(float radius);
+         void setOrientation(float degrees);
 
          QRectF boundingRect() const override;
          void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
@@ -24,14 +26,20 @@ namespace vpin::editor {
          void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
          QVariant itemChange(GraphicsItemChange change, const QVariant& value) override;
 
+      private:
+         void updateRadiusHandle();
+
       signals:
          void hasBeenMoved(QPointF position);
 
       private:
          PlayfieldTheme* m_theme;
-         Bumper* m_bumper;
 
          DragHandle* m_radiusHandle;
+
+         float m_radius = 0;
+         // Stored in radians
+         float m_orientation = 0;
    };
 
 }
