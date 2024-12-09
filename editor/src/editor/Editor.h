@@ -38,9 +38,10 @@ namespace vpin::editor {
          bool hasPendingChanges() const;
 
       signals:
-         void tableClosed();
-         void activeTableChanged(const QUuid&);
-         void tableCountChanged(int);
+         // Emitted when the active table is changed.
+         // Id will contain the identifier of the new active table or a null
+         // QUuid of no table is active (ex: closing the last table).
+         void activeTableChanged(const QUuid& id);
 
       private:
          vpin::adapter::Adapter* m_adapter;

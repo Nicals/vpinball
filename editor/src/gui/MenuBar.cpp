@@ -18,8 +18,8 @@ namespace vpin::editor {
    void MenuBar::actionNeedsTable(QAction* action, Editor* editor) const
    {
       action->setDisabled(!editor->hasTableLoaded());
-      connect(editor, &Editor::tableCountChanged, action, [action](int tableCount) {
-         action->setEnabled(tableCount > 0);
+      connect(editor, &Editor::activeTableChanged, action, [action](const QUuid& tableId) {
+         action->setEnabled(!tableId.isNull());
       });
    }
 

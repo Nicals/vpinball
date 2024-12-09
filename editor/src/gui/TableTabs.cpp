@@ -15,37 +15,8 @@ namespace vpin::editor {
    {
       tabBar()->setIconSize(QSize(8, 8));
 
-      connect(m_editor, &Editor::activeTableChanged, [this](const QUuid& id) {
-         int tabIndex = findTableWidget(id);
-
-         if (tabIndex == -1) {
-            createNewTableTab(m_editor->getActiveTable());
-         }
-         else {
-            setCurrentIndex(tabIndex);
-         }
-      });
-
-      // Switch editor active table when changing current tab
-      connect(this, &QTabWidget::currentChanged, [this](int index) {
-         if (index == -1) {
-            return;
-         }
-
-         QWidget* currentTab = currentWidget();
-         if (currentTab == nullptr) {
-            qCritical("Cannot get active table: no current tab.");
-            return;
-         }
-
-         QVariant tableId = currentTab->property("tableId");
-         if (!tableId.isValid()) {
-            qCritical("Cannot get active table: widget has no tableId property.");
-            return;
-         }
-
-         m_editor->setActiveTable(tableId.value<QUuid>());
-      });
+      connect(m_editor, &Editor::activeTableChanged, this, &TableTabs::setCurrentTableTab);
+      connect(this, &QTabWidget::currentChanged, this, &TableTabs::activateTabTable);
    }
 
    int TableTabs::findTableWidget(const QUuid& id) const
@@ -64,7 +35,7 @@ namespace vpin::editor {
       return -1;
    }
 
-   void TableTabs::createNewTableTab(TableEdit* table)
+   int TableTabs::createNewTableTab(TableEdit* table)
    {
       QWidget* page = new Playfield(m_editor->getPlayfieldTheme(), table);
       page->setProperty("tableId", table->getId());
@@ -105,6 +76,48 @@ namespace vpin::editor {
 
          removeTab(tabIndex);
       });
+
+      return tabIndex;
+   }
+
+   void TableTabs::activateTabTable(int index) const
+   {
+      if (index == -1) {
+         return;
+      }
+
+      QWidget* tab = widget(index);
+      if (tab == nullptr) {
+         qCritical() << "Cannot activate table: invalid tab index" << index;
+         return;
+      }
+
+      QVariant tableId = tab->property("tableId");
+      if (!tableId.isValid()) {
+         qCritical() << "Cannot activate table: tab does not have 'tableId' property.";
+         return;
+      }
+
+      m_editor->setActiveTable(tableId.value<QUuid>());
+   }
+
+   void TableTabs::setCurrentTableTab(const QUuid& tableId)
+   {
+      // Null id would imply that we don't have any more tabs opened.
+      if (tableId.isNull()) {
+         if (count() != 0) {
+            qWarning() << "Active table None received while having" << count() << "tabs.";
+         }
+         return;
+      }
+
+      int tabIndex = findTableWidget(tableId);
+
+      if (tabIndex == -1) {
+         tabIndex = createNewTableTab(m_editor->getActiveTable());
+      }
+
+      setCurrentIndex(tabIndex);
    }
 
 }

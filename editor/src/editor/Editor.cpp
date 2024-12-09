@@ -53,7 +53,6 @@ namespace vpin::editor {
          << "has been loaded and registered as"
          << table->getId().toString(QUuid::WithoutBraces);
 
-      emit tableCountChanged(m_tables.count());
       setActiveTable(table->getId());
 
       return true;
@@ -82,10 +81,12 @@ namespace vpin::editor {
       m_undoGroup->removeStack(table->getUndoStack());
       table->prepareForClosing();
 
-      m_tables.take(tableId);
-      emit tableClosed();
-      emit tableCountChanged(m_tables.count());
+      // TODO: Implement closing table on VPinball side
       qCritical() << "Closing table is not implemented on adapter side.";
+
+      m_tables.take(tableId);
+
+      setActiveTable(m_tables.empty() ? QUuid{} : m_tables.firstKey());
    }
 
    TableEdit* Editor::getActiveTable() const
@@ -105,16 +106,21 @@ namespace vpin::editor {
 
    void Editor::setActiveTable(const QUuid& id)
    {
-      if (id.isNull()) {
-         qCritical() << "Cannot set active table: null id given. Aborting.";
+      // Already active
+      if (id == m_activeTable) {
+         return;
       }
 
-      if (!m_tables.contains(id)) {
+      // Cannot activate non-existing table
+      if (!id.isNull() && !m_tables.contains(id)) {
          qCritical() << "Cannot set active table: table" << m_activeTable << "is not registred.";
+         return;
       }
 
       m_activeTable = id;
-      m_undoGroup->setActiveStack(m_tables.value(id)->getUndoStack());
+      m_undoGroup->setActiveStack(id.isNull() ? nullptr : m_tables.value(id)->getUndoStack());
+
+      qInfo() << "Active table set to" << (id.isNull() ? "none" : id.toString());
       emit activeTableChanged(id);
    }
 
