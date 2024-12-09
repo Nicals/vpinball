@@ -1,4 +1,5 @@
 #include <QDebug>
+#include <qlogging.h>
 #include <QUndoGroup>
 
 #include <adapter/Adapter.h>
@@ -104,6 +105,10 @@ namespace vpin::editor {
 
    void Editor::setActiveTable(const QUuid& id)
    {
+      if (id.isNull()) {
+         qCritical() << "Cannot set active table: null id given. Aborting.";
+      }
+
       if (!m_tables.contains(id)) {
          qCritical() << "Cannot set active table: table" << m_activeTable << "is not registred.";
       }
