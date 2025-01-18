@@ -6,6 +6,7 @@
 
 #include <vpinball/VPinballAdapter.h>
 
+#include "CWDGuard.h"
 #include "VPinTable.h"
 
 
@@ -59,15 +60,15 @@ namespace vpin::adapter {
 
    Table* VPinballAdapter::loadTable(const std::string& filepath)
    {
+      // VPinball changes the current working directory to load files.
+      // We don't want this.
+      CWDGuard cwdGuard;
+
       if (!m_tables.empty()) {
          throw std::runtime_error("Loading multiple table is sadly not yet implemented :(");
       }
 
-      // VPinball changes the current working directory to load files.
-      // We don't want this.
-      std::filesystem::path cwd = std::filesystem::current_path();
       m_vpinball->LoadFileName(filepath, false);
-      std::filesystem::current_path(cwd);
 
       VPinTable* table = new VPinTable(m_vpinball->GetActiveTable());
       m_tables.push_back(table);
