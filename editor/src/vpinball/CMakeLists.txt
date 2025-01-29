@@ -112,7 +112,6 @@ add_library(vpinball SHARED
   ${VPINBALL_SOURCE_DIR}/src/core/pininput.h
   ${VPINBALL_SOURCE_DIR}/src/core/pinundo.cpp
   ${VPINBALL_SOURCE_DIR}/src/core/pinundo.h
-  # ${VPINBALL_SOURCE_DIR}/src/core/main.cpp
   ${VPINBALL_SOURCE_DIR}/src/core/main.h
   ${VPINBALL_SOURCE_DIR}/src/core/vpinball.cpp
   ${VPINBALL_SOURCE_DIR}/src/core/vpinball_h.h
@@ -122,6 +121,8 @@ add_library(vpinball SHARED
   ${VPINBALL_SOURCE_DIR}/src/core/Settings.h
   ${VPINBALL_SOURCE_DIR}/src/core/TableDB.cpp
   ${VPINBALL_SOURCE_DIR}/src/core/TableDB.h
+  ${VPINBALL_SOURCE_DIR}/src/core/DynamicScript.cpp
+  ${VPINBALL_SOURCE_DIR}/src/core/DynamicScript.h
 
   ${VPINBALL_SOURCE_DIR}/src/math/bbox.h
   ${VPINBALL_SOURCE_DIR}/src/math/math.cpp
