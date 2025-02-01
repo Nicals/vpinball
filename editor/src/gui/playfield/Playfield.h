@@ -6,9 +6,9 @@
 namespace vpin::editor
 {
 
-   class Bumper;
    class TableEdit;
    class PlayfieldTheme;
+   class ItemFactoryRegister;
 
    class Playfield final
       : public QGraphicsView
@@ -17,8 +17,6 @@ namespace vpin::editor
          Playfield(PlayfieldTheme* theme, TableEdit* table, QWidget* parent=nullptr);
 
       private:
-         void addBumperItem(Bumper* bumper);
-
          void mousePressEvent(QMouseEvent* event) override;
          void mouseReleaseEvent(QMouseEvent* event) override;
          void mouseMoveEvent(QMouseEvent* event) override;
@@ -28,6 +26,8 @@ namespace vpin::editor
          QGraphicsScene* m_scene;
          PlayfieldTheme* m_theme;
          TableEdit* m_table;
+
+         ItemFactoryRegister* m_itemFactories;
 
          bool m_isDragging = false;
          QPoint m_dragStartPosition;

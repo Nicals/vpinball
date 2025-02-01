@@ -2,8 +2,10 @@
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
+#include <TableEdit.h>
 #include <playfield/Bumper.h>
 #include <playfield/PlayfieldTheme.h>
+#include <playfield/commands/SetElementPositionCommand.h>
 
 #include "DragHandle.h"
 #include "BumperItem.h"
@@ -80,6 +82,39 @@ namespace vpin::editor {
       }
 
       return QGraphicsItem::itemChange(change, value);
+   }
+
+   BumperItemFactory::BumperItemFactory(TableEdit* table, PlayfieldTheme* theme)
+      : m_table{table},
+        m_theme{theme}
+   {
+   }
+
+   QGraphicsObject* BumperItemFactory::createGraphicsObject(PlayfieldElement* element) const
+   {
+      Bumper* bumper = qobject_cast<Bumper*>(element);
+      if (bumper == nullptr) {
+         return nullptr;
+      }
+
+      BumperItem* item = new BumperItem{m_theme};
+      item->setPos(bumper->getPosition());
+      item->setRadius(bumper->getRadius());
+      item->setOrientation(bumper->getOrientation());
+
+      connect(bumper, &Bumper::changed, [item, bumper]() {
+         item->setPos(bumper->getPosition());
+         item->setRadius(bumper->getRadius());
+         item->setOrientation(bumper->getOrientation());
+         item->update();
+      });
+
+      connect(item, &BumperItem::hasBeenMoved, [this, bumper](QPointF position) {
+         auto cmd = new SetElementPositionCommand{m_table, bumper->getName(), position};
+         m_table->getUndoStack()->push(cmd);
+      });
+
+      return item;
    }
 
 }

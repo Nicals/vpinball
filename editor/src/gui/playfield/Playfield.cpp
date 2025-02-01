@@ -4,10 +4,11 @@
 #include <playfield/commands/SetElementPositionCommand.h>
 #include <TableEdit.h>
 
-#include <playfield/Bumper.h>
 #include <playfield/PlayfieldElement.h>
 #include <playfield/PlayfieldTheme.h>
+
 #include "BumperItem.h"
+#include "ItemFactory.h"
 #include "Playfield.h"
 
 
@@ -24,48 +25,28 @@ namespace vpin::editor {
       setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
       m_scene = new QGraphicsScene;
-
       setScene(m_scene);
 
-      for (auto obj: m_table->getElements()) {
-         if (QString{obj->metaObject()->className()} == "vpin::editor::Bumper") {
-            addBumperItem(qobject_cast<Bumper*>(obj));
+      m_itemFactories = new ItemFactoryRegister{this};
+      m_itemFactories->registerFactory(new BumperItemFactory{m_table, m_theme});
+
+      for (auto element: m_table->getElements()) {
+         QGraphicsObject* object = m_itemFactories->createGraphicsObject(element);
+         if (object == nullptr) {
+            qCritical() << "No playfield item implemented for" << element->metaObject()->className();
+            continue;
          }
-         else
-         {
-            qCritical() << "No playfield item implemented for" << obj->metaObject()->className();
-         }
+
+         object->setFlag(QGraphicsItem::ItemIsMovable, true);
+         object->setFlag(QGraphicsItem::ItemIsSelectable, true);
+
+         m_scene->addItem(object);
       }
 
       // Refresh the scene when the theme changes
       connect(m_theme, &PlayfieldTheme::changed, this, [this]() {
          this->m_scene->update();
       });
-   }
-
-   void Playfield::addBumperItem(Bumper* bumper)
-   {
-      BumperItem* item = new BumperItem(m_theme);
-      item->setPos(bumper->getPosition());
-      item->setRadius(bumper->getRadius());
-      item->setOrientation(bumper->getOrientation());
-
-      item->setFlag(QGraphicsItem::ItemIsMovable, true);
-      item->setFlag(QGraphicsItem::ItemIsSelectable, true);
-
-      connect(item, &BumperItem::hasBeenMoved, [this, bumper](QPointF position) {
-         auto cmd = new SetElementPositionCommand(m_table, bumper->getName(), position);
-         m_table->getUndoStack()->push(cmd);
-      });
-
-      connect(bumper, &Bumper::changed, [item, bumper]() {
-         item->setPos(bumper->getPosition());
-         item->setRadius(bumper->getRadius());
-         item->setOrientation(bumper->getOrientation());
-         item->update();
-      });
-
-      m_scene->addItem(item);
    }
 
    void Playfield::mousePressEvent(QMouseEvent* event)
