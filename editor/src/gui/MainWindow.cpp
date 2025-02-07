@@ -1,4 +1,5 @@
 #include <QApplication>
+#include <QtConcurrent>
 #include <QCoreApplication>
 #include <QDockWidget>
 #include <QFileDialog>
@@ -61,13 +62,29 @@ namespace vpin::editor {
          return;
       }
 
-      if (m_editor->loadTable(filepath)) {
-         statusBar()->showMessage(tr("Loaded table: %1").arg(filepath), tempMessageTimeout);
-      }
-      else
-      {
-         QMessageBox::critical(this, tr("Error"), tr("Failed to load vpx table %1").arg(filepath));
-      }
+      setDisabled(true);
+      statusBar()->showMessage(tr("Loading table: %1").arg(filepath));
+
+      QFuture<bool> future = QtConcurrent::run([this, filepath] {
+         return m_editor->loadTable(filepath);
+      });
+
+      QFutureWatcher<bool>* watcher = new QFutureWatcher<bool>;
+      connect(watcher, &QFutureWatcher<bool>::finished, [this, filepath, watcher]() {
+         bool successful = watcher->future().result();
+
+         if (successful) {
+            statusBar()->showMessage(tr("Loaded table: %1").arg(filepath), tempMessageTimeout);
+         }
+         else {
+            QMessageBox::critical(this, tr("Error"), tr("Failed to load vpx table %1").arg(filepath));
+            statusBar()->showMessage(tr("Failed to load table: %1").arg(filepath), tempMessageTimeout);
+         }
+         setDisabled(false);
+         watcher->deleteLater();
+      });
+
+      watcher->setFuture(future);
    }
 
    bool MainWindow::saveCurrentTable()

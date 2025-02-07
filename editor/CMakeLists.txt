@@ -8,7 +8,7 @@ project(vpinball-editor
 )
 
 find_package(Qt6 REQUIRED
-  COMPONENTS Core Widgets
+  COMPONENTS Core Concurrent Widgets
 )
 
 qt_standard_project_setup()

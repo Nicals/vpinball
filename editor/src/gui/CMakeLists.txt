@@ -16,7 +16,7 @@ qt_add_resources(gui icons
 )
 
 target_link_libraries(gui
-  PUBLIC Qt6::Widgets editor
+  PUBLIC Qt6::Concurrent Qt6::Widgets editor
 )
 
 target_include_directories(gui INTERFACE .)
