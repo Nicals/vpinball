@@ -7,12 +7,15 @@ namespace vpin::editor
 {
 
    class TableEdit;
+   class PlayfieldElement;
    class PlayfieldTheme;
    class ItemFactoryRegister;
 
    class Playfield final
       : public QGraphicsView
    {
+      Q_OBJECT;
+
       public:
          Playfield(PlayfieldTheme* theme, TableEdit* table, QWidget* parent=nullptr);
 
@@ -21,6 +24,11 @@ namespace vpin::editor
          void mouseReleaseEvent(QMouseEvent* event) override;
          void mouseMoveEvent(QMouseEvent* event) override;
          void wheelEvent(QWheelEvent* event) override;
+
+         void notifyItemSelected();
+
+      signals:
+         void elementSelected(QList<PlayfieldElement*> elements);
 
       private:
          QGraphicsScene* m_scene;

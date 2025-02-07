@@ -9,6 +9,7 @@
 
 #include "BumperItem.h"
 #include "ItemFactory.h"
+#include "PlayfieldGraphicsObject.h"
 #include "Playfield.h"
 
 
@@ -51,6 +52,7 @@ namespace vpin::editor {
       connect(m_theme, &PlayfieldTheme::changed, this, [this]() {
          this->m_scene->update();
       });
+      connect(m_scene, &QGraphicsScene::selectionChanged, this, &Playfield::notifyItemSelected);
    }
 
    void Playfield::mousePressEvent(QMouseEvent* event)
@@ -98,6 +100,26 @@ namespace vpin::editor {
       }
 
       scale(zoomFactor, zoomFactor);
+   }
+
+   void Playfield::notifyItemSelected()
+   {
+      QList<PlayfieldElement*> selectedItems;
+
+      for (auto selected : m_scene->selectedItems()) {
+         PlayfieldGraphicsObject* playfieldItem = qgraphicsitem_cast<PlayfieldGraphicsObject*>(selected);
+         if (playfieldItem == nullptr) {
+            continue;
+         }
+
+         selectedItems.append(playfieldItem->getElement());
+      }
+
+      if (selectedItems.empty()) {
+         return;
+      }
+
+      emit elementSelected(selectedItems);
    }
 
 }
