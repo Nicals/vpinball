@@ -8,13 +8,15 @@
 #include <playfield/commands/SetElementPositionCommand.h>
 
 #include "DragHandle.h"
+#include "PlayfieldGraphicsObject.h"
 #include "BumperItem.h"
 
 
 namespace vpin::editor {
 
-   BumperItem::BumperItem(PlayfieldTheme* theme)
-      : m_theme{theme}
+   BumperItem::BumperItem(PlayfieldElement* element, PlayfieldTheme* theme)
+      : m_theme{theme},
+        PlayfieldGraphicsObject{element}
    {
       m_radiusHandle = new DragHandle{m_theme, this};
 
@@ -90,14 +92,14 @@ namespace vpin::editor {
    {
    }
 
-   QGraphicsObject* BumperItemFactory::createGraphicsObject(PlayfieldElement* element) const
+   PlayfieldGraphicsObject* BumperItemFactory::createGraphicsObject(PlayfieldElement* element) const
    {
       Bumper* bumper = qobject_cast<Bumper*>(element);
       if (bumper == nullptr) {
          return nullptr;
       }
 
-      BumperItem* item = new BumperItem{m_theme};
+      BumperItem* item = new BumperItem{element, m_theme};
       item->setPos(bumper->getPosition());
       item->setRadius(bumper->getRadius());
       item->setOrientation(bumper->getOrientation());

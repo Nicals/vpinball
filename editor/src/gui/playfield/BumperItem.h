@@ -1,10 +1,9 @@
 #pragma once
 
-#include <QGraphicsObject>
-
 #include <Angle.h>
 
 #include "ItemFactory.h"
+#include "PlayfieldGraphicsObject.h"
 
 
 namespace vpin::editor {
@@ -14,12 +13,12 @@ namespace vpin::editor {
    class TableEdit;
 
    class BumperItem
-      : public QGraphicsObject
+      : public PlayfieldGraphicsObject
    {
       Q_OBJECT;
 
       public:
-         BumperItem(PlayfieldTheme* theme);
+         BumperItem(PlayfieldElement* element, PlayfieldTheme* theme);
 
          void setRadius(float radius);
          void setOrientation(const Angle& degrees);
@@ -53,7 +52,7 @@ namespace vpin::editor {
          BumperItemFactory(TableEdit* table, PlayfieldTheme* theme);
          virtual ~BumperItemFactory() override = default;
 
-         virtual QGraphicsObject* createGraphicsObject(PlayfieldElement* element) const override;
+         virtual PlayfieldGraphicsObject* createGraphicsObject(PlayfieldElement* element) const override;
 
       private:
          PlayfieldTheme* m_theme;

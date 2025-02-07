@@ -3,4 +3,5 @@ target_sources(gui PRIVATE
   DragHandle.cpp
   ItemFactory.cpp
   Playfield.cpp
+  PlayfieldGraphicsObject.cpp
 )

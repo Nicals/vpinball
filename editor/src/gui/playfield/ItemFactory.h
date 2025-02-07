@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QGraphicsObject>
+#include "PlayfieldGraphicsObject.h"
 
 
 namespace vpin::editor {
@@ -17,11 +17,11 @@ namespace vpin::editor {
          virtual ~ItemFactory() = default;
 
          /**
-          * Creates a QGraphicsObjects from a table element.
+          * Creates a PlayfieldGraphicsObject from a table element.
           * Returns nullptr if the element passed as argument is not compatible
           * with the current factory.
           */
-         virtual QGraphicsObject* createGraphicsObject(PlayfieldElement* element) const = 0;
+         virtual PlayfieldGraphicsObject* createGraphicsObject(PlayfieldElement* element) const = 0;
    };
 
 
@@ -41,7 +41,7 @@ namespace vpin::editor {
           * Will return nullptr if no appropriate factory has been registered
           * for the current element.
           */
-         QGraphicsObject* createGraphicsObject(PlayfieldElement* element) const;
+         PlayfieldGraphicsObject* createGraphicsObject(PlayfieldElement* element) const;
 
       private:
          QList<ItemFactory*> m_factories;

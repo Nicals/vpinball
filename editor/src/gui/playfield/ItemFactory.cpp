@@ -16,10 +16,10 @@ namespace vpin::editor {
       factory->setParent(this);
    }
 
-   QGraphicsObject* ItemFactoryRegister::createGraphicsObject(PlayfieldElement* element) const
+   PlayfieldGraphicsObject* ItemFactoryRegister::createGraphicsObject(PlayfieldElement* element) const
    {
       for (auto factory: m_factories) {
-         QGraphicsObject* object = factory->createGraphicsObject(element);
+         PlayfieldGraphicsObject* object = factory->createGraphicsObject(element);
 
          if (object != nullptr) {
             return object;

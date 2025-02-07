@@ -43,6 +43,7 @@ namespace vpin::editor {
          m_scene->addItem(object);
          connect(element, &QObject::destroyed, [object, this]() {
             m_scene->removeItem(object);
+            object->deleteLater();
          });
       }
 
