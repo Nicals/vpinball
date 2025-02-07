@@ -41,6 +41,9 @@ namespace vpin::editor {
          object->setFlag(QGraphicsItem::ItemIsSelectable, true);
 
          m_scene->addItem(object);
+         connect(element, &QObject::destroyed, [object, this]() {
+            m_scene->removeItem(object);
+         });
       }
 
       // Refresh the scene when the theme changes
