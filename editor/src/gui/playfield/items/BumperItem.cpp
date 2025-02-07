@@ -7,8 +7,8 @@
 #include <playfield/PlayfieldTheme.h>
 #include <playfield/commands/SetElementPositionCommand.h>
 
+#include "../PlayfieldGraphicsObject.h"
 #include "DragHandle.h"
-#include "PlayfieldGraphicsObject.h"
 #include "BumperItem.h"
 
 

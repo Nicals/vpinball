@@ -2,8 +2,8 @@
 
 #include <Angle.h>
 
-#include "ItemFactory.h"
-#include "PlayfieldGraphicsObject.h"
+#include "../ItemFactory.h"
+#include "../PlayfieldGraphicsObject.h"
 
 
 namespace vpin::editor {

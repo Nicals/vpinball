@@ -7,10 +7,10 @@
 #include <playfield/PlayfieldElement.h>
 #include <playfield/PlayfieldTheme.h>
 
-#include "BumperItem.h"
 #include "ItemFactory.h"
 #include "PlayfieldGraphicsObject.h"
 #include "Playfield.h"
+#include "items/BumperItem.h"
 
 
 namespace vpin::editor {
